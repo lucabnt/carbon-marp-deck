@@ -6,6 +6,8 @@ All notable changes to this project. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-11-21
+
 ### Added
 
 - Bar chart component (`.bars` › `.bar`, `.bars.vertical`): one series after the Carbon simple
@@ -65,5 +67,6 @@ First public release.
   PDF with PowerPoint), `build_pictograms.py`.
 - Example decks with their PDF and PPTX renders, `SECURITY.md`, `CONTRIBUTING.md`, CI workflow.
 
-[Unreleased]: https://github.com/lucabnt/carbon-marp-deck/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/lucabnt/carbon-marp-deck/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/lucabnt/carbon-marp-deck/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/lucabnt/carbon-marp-deck/releases/tag/v1.0.0
