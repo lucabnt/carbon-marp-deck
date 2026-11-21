@@ -88,6 +88,18 @@ To create a presentation or slide deck, follow <path-to>/carbon-marp-deck/SKILL.
 **Web chat apps.** The export needs Node.js, Python and Chrome or Edge on the machine that runs
 the commands, so use an agent that works on your computer (or in a sandbox with those tools).
 
+**claude.ai.** Upload the skill as a .zip in **Settings > Capabilities > Skills** (with code
+execution turned on). claude.ai accepts at most 200 files and no archives inside the zip, so
+build it with the packaging script rather than zipping the folder:
+
+```bash
+python tools/build_skill_zip.py      # -> dist/carbon-marp-deck-<version>.zip
+```
+
+The script packs the pictogram SVGs into one file (`assets/pictograms/svg.json`, read by
+`scripts/pictograms.py`) and tests the zip; CI runs the same test. The claude.ai sandbox
+usually has no Chrome or Edge, so expect the agent to write the deck there but not export it.
+
 ### 2. Ask for a deck
 
 Describe the deck in plain language, or call the skill by name where your agent supports it

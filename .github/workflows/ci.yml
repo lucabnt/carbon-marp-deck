@@ -32,6 +32,8 @@ jobs:
           node --check pptx-export/dom/page_extract.js
       - name: Allowlist is valid JSON
         run: python -c "import json; json.load(open('themes/marp.config.json'))"
+      - name: claude.ai skill zip (at most 200 files, no nested archives)
+        run: python tools/build_skill_zip.py --check
       - name: Decks lint clean, CSS in sync
         run: python tools/check_examples.py --no-pptx
 

@@ -8,6 +8,9 @@
 
 Pictograms come from the open-source @carbon/pictograms package (Apache-2.0),
 stored in assets/pictograms/svg/ and listed in assets/pictograms/catalog.csv.
+The claude.ai upload build packs the SVGs into one file, assets/pictograms/svg.json
+({file name: SVG text}), because claude.ai accepts at most 200 files per skill and no
+nested archives; this script reads either form.
 A deck refers to them as `assets/pictograms/svg/<name>.svg`; `sync` copies the
 referenced files next to the deck so the deck folder stays self-contained.
 """
@@ -18,11 +21,14 @@ import csv
 import difflib
 import re
 import shutil
+import json
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 LIB = ROOT / "assets" / "pictograms"
+SVG_DIR = LIB / "svg"
+SVG_PACK = LIB / "svg.json"
 # Only deck-local references; "../assets/..." (examples) points at the library itself.
 REF = re.compile(r"""(?<![./\w])assets/pictograms/svg/([A-Za-z0-9_.\-]+\.svg)""")
 
@@ -57,6 +63,32 @@ def search(terms: list[str], category: str | None, limit: int) -> list[dict]:
     return [r for _, _, r in sorted(scored, key=lambda x: x[:2])][:limit]
 
 
+def _pack() -> dict[str, str]:
+    if not SVG_PACK.is_file():
+        return {}
+    return json.loads(SVG_PACK.read_text(encoding="utf-8"))
+
+
+def svg_names() -> set[str]:
+    """File names of the available pictograms, from svg/ or the packed svg.json."""
+    if SVG_DIR.is_dir():
+        return {p.name for p in SVG_DIR.glob("*.svg")}
+    return set(_pack())
+
+
+def copy_svg(fname: str, dest: Path) -> bool:
+    """Copy one pictogram to dest; False if it does not exist."""
+    src = SVG_DIR / fname
+    if src.is_file():
+        shutil.copy2(src, dest)
+        return True
+    text = _pack().get(fname)
+    if text is None:
+        return False
+    dest.write_text(text, encoding="utf-8", newline="")
+    return True
+
+
 def referenced(deck: Path) -> list[str]:
     return sorted(set(REF.findall(deck.read_text(encoding="utf-8-sig"))))
 
@@ -64,22 +96,22 @@ def referenced(deck: Path) -> list[str]:
 def sync(deck: Path) -> list[str]:
     """Copy referenced SVGs into <deck dir>/assets/pictograms/svg/. Return unknown names."""
     dest = deck.parent / "assets" / "pictograms" / "svg"
-    if dest.resolve() == (LIB / "svg").resolve():
+    if dest.resolve() == SVG_DIR.resolve():
         return []
+    available = svg_names()
     unknown = []
     for fname in referenced(deck):
-        src = LIB / "svg" / fname
-        if not src.exists():
+        if fname not in available:
             unknown.append(fname)
             continue
         dest.mkdir(parents=True, exist_ok=True)
         if not (dest / fname).exists():
-            shutil.copy2(src, dest / fname)
+            copy_svg(fname, dest / fname)
     return unknown
 
 
 def suggest(fname: str) -> list[str]:
-    names = [p.stem for p in (LIB / "svg").glob("*.svg")]
+    names = [Path(n).stem for n in svg_names()]
     return difflib.get_close_matches(Path(fname).stem, names, n=3, cutoff=0.5)
 
 
