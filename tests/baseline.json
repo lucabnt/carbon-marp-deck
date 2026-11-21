@@ -179,6 +179,42 @@
   ],
   "warnings": []
  },
+ "08-bar-charts": {
+  "shapes": [
+   22,
+   22,
+   28,
+   41,
+   49,
+   31,
+   45
+  ],
+  "notes": [
+   "EXAMPLE 08 — Bar Charts\n\nComponents: .bars, .bar, .vertical, .stacked, .grouped, .legend, .gray\n\n--v is the bar length 0-100: value / largest value × 100, rounded.\n\nPattern A: horizontal bars, sorted, one colour\n\nSort the bars by value unless the categories have a natural order.",
+   "Pattern B: one highlighted bar, the others muted, next to the explanation\n\nColour only the bar the title is about; gray mutes the rest.",
+   "Pattern C: vertical columns for a time series\n\nTime runs left to right; keep the categories in their natural order.",
+   "Pattern D: 100% stacked bars — every bar totals 100, so no total is shown\n\nSegments take the categorical palette in order; the legend lists them in the same order.",
+   "Pattern E: vertical stacked columns — the tallest column totals 100\n\nEach --v is the segment value / largest column total x 100, rounded.",
+   "Pattern F: grouped bars — two series per category; the largest single bar is 100",
+   "Pattern G: vertical grouped columns — three series per quarter"
+  ],
+  "warnings": []
+ },
+ "09-meters-and-roadmaps": {
+  "shapes": [
+   19,
+   18,
+   68,
+   41
+  ],
+  "notes": [
+   "EXAMPLE 09 — Meters and Roadmaps\n\nComponents: .meter (status, target, .proportional), .legend, .roadmap,\n\n.scale, .task\n\nPattern A: meters — one per measure, --v is the share filled (0-100)",
+   "Pattern B: bullet — the value against a target marker (--t)",
+   "Pattern C: proportional meter — parts of a whole in one bar, the rest is free\n\nEach part's --v is its size / capacity x 100; the grey track is free space.",
+   "Pattern D: roadmap — floating bars from --from to --to (0-100 of the timeline)\n\nOne quarter = 25; one month = 100 / 12 ≈ 8.33. Same colour for the same workstream."
+  ],
+  "warnings": []
+ },
  "converter-cases": {
   "shapes": [
    3,

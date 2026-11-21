@@ -14,6 +14,13 @@ Catches the mistakes that break a slide silently, before the PDF / PPTX export:
            (default or `blue` on light slides, `white` on dark slides:
            `lead dark`, `section`, `backup`, `end`)
   warning  leftover end-mark image (the closing slide is now text on Gray 100)
+  warning  bar chart `.bar` without `style="--v: N"` (N from 0 to 100), without its
+           `<span></span>` fill, or a `.bars` chart whose largest bar is not 100;
+           stacked and grouped charts: a span without `--v`, bars with different
+           numbers of spans, a largest bar that is not 100, no `.legend` on the slide
+  warning  `.meter` without `--v` 0-100 or its track, a target (`--t`) without
+           `<u></u>` or the reverse, proportional parts over 100 or without a legend
+  warning  roadmap `.task` without `--from` < `--to` (0-100) or its `<span></span>`
 
 Usage:
     python scripts/lint_deck.py my-deck/my-deck.md
@@ -49,6 +56,12 @@ MARKDOWN_LINE = re.compile(r"^(#{1,6}\s|[-*+]\s|\d+[.)]\s|>|\|)")
 BOLD_RE = re.compile(r"\*\*[^*\s][^*]*\*\*")
 FENCE_RE = re.compile(r"^\s{0,3}(`{3,}|~{3,})")
 SEPARATOR_RE = re.compile(r"^\s{0,3}(-{3,}|\*{3,}|_{3,})\s*$")
+BARS_RE = re.compile(r'<div\s+class="bars\b')
+BAR_RE = re.compile(r'<div\s+class="bar(?:\s[^"]*)?"')
+LEGEND_RE = re.compile(r'<div\s+class="legend\b')
+METER_RE = re.compile(r'<div\s+class="meter\b')
+ROADMAP_RE = re.compile(r'<div\s+class="roadmap\b')
+TASK_RE = re.compile(r'<div\s+class="task\b')
 
 
 def read_text(md: Path) -> str:
@@ -218,6 +231,9 @@ def check_slide(md: Path, number: int, first_line: int, lines, issues):
             continue
         depth += len(re.findall(r"<div\b", line)) - len(re.findall(r"</div>", line))
 
+    # -- charts: bars, meters, roadmaps -----------------------------------------
+    check_charts(body, add)
+
     # -- removed end mark --------------------------------------------------------
     for off, line in enumerate(body):
         if "end-mark" in line:
@@ -238,6 +254,113 @@ def check_slide(md: Path, number: int, first_line: int, lines, issues):
             elif not dark and "white" in cls:
                 add("warning", off, "white pictogram on a light slide is invisible; "
                                     "drop the `white` class")
+
+
+def _num(pattern: str, text: str):
+    m = re.search(pattern + r":\s*(-?\d+(?:\.\d+)?)\s*[;\"']", text)
+    return float(m.group(1)) if m else None
+
+
+def check_charts(body, add):
+    """Bar charts (`.bars`: simple, `stacked`, `grouped`), meters and roadmaps."""
+    lines = blank_comments(body)
+    has_legend = any(LEGEND_RE.search(ln) for ln in lines)
+    chart, kind, totals, segments = None, "", [], set()
+    roadmap = None
+    for off, raw in enumerate(lines):
+        line = raw.strip()
+
+        # meters (one line each)
+        if METER_RE.match(line):
+            cls = re.search(r'class="([^"]*)"', line).group(1).split()
+            if "proportional" in cls:
+                inner = re.findall(r"<span\b[^>]*>", line)[1:]
+                parts = [_num("--v", s) for s in inner]
+                if not inner or None in parts:
+                    add("warning", off, "each part of a proportional `.meter` needs "
+                                        "`<span style=\"--v: N\"></span>` inside the track")
+                elif sum(parts) > 101:
+                    add("warning", off, f"the parts of this meter add up to {sum(parts):g}; "
+                                        "they can fill at most 100")
+                if not has_legend:
+                    add("warning", off, "a proportional meter needs a `.legend` on the slide")
+            else:
+                v = _num("--v", line)
+                if v is None or not 0 <= v <= 100:
+                    add("warning", off, "each `.meter` needs `style=\"--v: N\"` with N from 0 to 100")
+                if "<span><span></span>" not in line.replace(" ", ""):
+                    add("warning", off, "`.meter` needs its track: `<span><span></span></span>` "
+                                        "after the value")
+            t = _num("--t", line)
+            if ("<u></u>" in line) != (t is not None):
+                add("warning", off, "a target needs both `--t: N` in the style and `<u></u>` "
+                                    "in the track")
+            elif t is not None and not 0 <= t <= 100:
+                add("warning", off, "`--t` must be from 0 to 100")
+            continue
+
+        # roadmaps
+        if ROADMAP_RE.match(line):
+            roadmap = off
+            continue
+        if roadmap is not None:
+            if TASK_RE.match(line):
+                a, b = _num("--from", line), _num("--to", line)
+                if a is None or b is None or not 0 <= a < b <= 100:
+                    add("warning", off, "each `.task` needs `style=\"--from: A; --to: B\"` with "
+                                        "0 <= A < B <= 100 (share of the whole timeline)")
+                if "<span></span>" not in line.replace(" ", ""):
+                    add("warning", off, "`.task` needs an empty `<span></span>` after its label "
+                                        "(it draws the bar)")
+            elif line.startswith("</div>"):
+                roadmap = None
+            continue
+
+        # bar charts
+        if BARS_RE.match(line):
+            cls = re.search(r'class="([^"]*)"', line).group(1).split()
+            kind = "stacked" if "stacked" in cls else "grouped" if "grouped" in cls else ""
+            chart, totals, segments = off, [], set()
+            if kind and not has_legend:
+                add("warning", off, f"a {kind} chart needs a `.legend` on the slide "
+                                    "(one `<span><i></i>Name</span>` per series)")
+            continue
+        if chart is None:
+            continue
+        if BAR_RE.match(line):
+            if kind:
+                spans = re.findall(r"<span\b[^>]*>", line)
+                parts = [_num("--v", s) for s in spans]
+                if not spans or None in parts:
+                    add("warning", off, f"each span of a {kind} `.bar` needs "
+                                        "`style=\"--v: N\"` with N from 0 to 100")
+                    continue
+                segments.add(len(spans))
+                totals.append(sum(parts) if kind == "stacked" else max(parts))
+                if totals[-1] > 101:
+                    add("warning", off, f"this bar reaches {totals[-1]:g}; "
+                                        "the largest bar must be 100")
+                if kind == "grouped" and line.count("<small>") not in (0, len(spans)):
+                    add("warning", off, "put one `<small>` value inside every span, or none")
+            else:
+                v = _num("--v", line)
+                if v is None or not 0 <= v <= 100:
+                    add("warning", off, "each `.bar` needs `style=\"--v: N\"` with N from 0 to 100 "
+                                        "(value / largest value x 100)")
+                else:
+                    totals.append(v)
+                if "<span></span>" not in line.replace(" ", ""):
+                    add("warning", off, "`.bar` needs an empty `<span></span>` between label "
+                                        "and value (it draws the bar)")
+        elif line.startswith("</div>"):
+            top = max(totals) if totals else None
+            if top is not None and not (99 <= top <= 101 if kind == "stacked" else top == 100):
+                add("warning", chart, f"the largest bar is {top:g}; "
+                                      "scale the chart so the largest value is 100")
+            if len(segments) > 1:
+                add("warning", chart, f"every bar of a {kind} chart needs the same number of "
+                                      "spans (use `--v: 0` for an empty one)")
+            chart = None
 
 
 def lint(md: Path):

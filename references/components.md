@@ -207,6 +207,119 @@ For a 2 × 2 grid put four cards in one `.cols` block.
 <div class="kpi-label">customer satisfaction — <strong>2024</strong></div>
 ```
 
+### Bar chart
+
+One series, one `.bar` per line, values written on the bars (no axes). `--v` is the bar
+length from 0 to 100: **value ÷ largest value × 100, rounded**, so the largest bar is 100.
+The empty `<span></span>` draws the bar; `<small>` is the value as the audience reads it.
+
+```html
+<div class="bars">
+<div class="bar" style="--v: 100"><b>Europe</b><span></span><small>412</small></div>
+<div class="bar" style="--v: 62"><b>North America</b><span></span><small>256</small></div>
+<div class="bar" style="--v: 35"><b>Asia Pacific</b><span></span><small>144</small></div>
+</div>
+
+<p class="small">New customers by region, 2024 · source: …</p>
+```
+
+Vertical columns, for a time series (labels at most two lines, up to about 8 columns):
+
+```html
+<div class="bars vertical">
+<div class="bar" style="--v: 100"><b>Q1</b><span></span><small>1,840</small></div>
+<div class="bar" style="--v: 71"><b>Q2</b><span></span><small>1,300</small></div>
+</div>
+```
+
+Colour: *(none)* Blue 60 · `purple` · `cyan` · `teal` · `magenta`, on `.bars` for the whole
+chart or on one `.bar`; `gray` mutes the bars that are not the point
+(`<div class="bar gray" …>` next to one `<div class="bar magenta" …>`). Long labels: widen
+the label column with `<div class="bars" style="--label: 240px">` (default 160px).
+Sort horizontal bars by value unless the categories have a natural order; up to about 8 bars.
+Always add a `.small` line with what is measured and the source.
+
+### Stacked bar chart
+
+Parts of a whole per category: one `<span style="--v: N">` per segment, with a `.legend`
+above the chart that names the segments in the same order. Each `--v` is **segment value ÷
+largest bar total × 100, rounded**, so the longest bar totals 100; for a percentage chart
+every bar totals 100 and `<small>` (the total) can be left out. Every bar has the same
+segments in the same order (`--v: 0` for an empty one); at most five segments.
+
+```html
+<div class="legend"><span><i></i>Compute</span><span><i></i>Storage</span><span><i></i>Network</span></div>
+
+<div class="bars stacked">
+<div class="bar"><b>Q1</b><span style="--v: 42"></span><span style="--v: 21"></span><span style="--v: 7"></span><small>€ 200k</small></div>
+<div class="bar"><b>Q4</b><span style="--v: 61"></span><span style="--v: 28"></span><span style="--v: 11"></span><small>€ 285k</small></div>
+</div>
+
+<p class="small">Quarterly cloud spend by service · source: …</p>
+```
+
+Vertical columns: `<div class="bars vertical stacked">`; the first segment sits on the
+baseline. The colours are fixed: the Carbon categorical palette in order (Purple 70, Cyan 50,
+Teal 70, Magenta 70, Red 50); colour modifiers and `gray` do not apply to stacked charts.
+
+### Grouped bar chart
+
+Two to four series side by side per category (e.g. 2023 vs 2024), with a `.legend`. One span
+per series with its value inside; the **largest single bar** is `--v: 100`. Same series in
+the same order in every bar; same palette as the stacked chart.
+
+```html
+<div class="legend"><span><i></i>2023</span><span><i></i>2024</span></div>
+
+<div class="bars grouped">
+<div class="bar"><b>Europe</b><span style="--v: 92"><small>380</small></span><span style="--v: 100"><small>412</small></span></div>
+<div class="bar"><b>North America</b><span style="--v: 46"><small>190</small></span><span style="--v: 62"><small>256</small></span></div>
+</div>
+```
+
+Vertical columns per period: `<div class="bars vertical grouped">`, up to about 5 periods
+with 3 series.
+
+### Meter and target (bullet)
+
+One measure against its full scale: title, value text, and a track filled to `--v` (0–100).
+Add `--t` and `<u></u>` for a target mark. Colour: *(none)* Blue 60 · `purple` · `cyan` ·
+`teal` · `magenta`, or status `success` · `warn` · `error` when the meter shows a status.
+
+```html
+<div class="meter" style="--v: 72"><b>Budget used</b><small>€ 720k of € 1 M · 72%</small><span><span></span></span></div>
+<div class="meter error" style="--v: 64; --t: 85"><b>Billing</b><small>64 · target 85</small><span><span></span><u></u></span></div>
+```
+
+Say in the `.small` line under the meters what the mark means.
+
+### Proportional meter
+
+Parts of a capacity in one track (the grey rest is unused), with a `.legend`. Each part's
+`--v` is part ÷ capacity × 100; the parts take the categorical palette in order.
+
+```html
+<div class="legend"><span><i></i>Logs</span><span><i></i>Backups</span></div>
+
+<div class="meter proportional"><b>Storage used</b><small>96 TB of 200 TB · 48%</small><span><span style="--v: 31"></span><span style="--v: 17"></span></span></div>
+```
+
+### Roadmap (floating bars)
+
+A timeline: `.scale` names equal periods, each `.task` is a bar from `--from` to `--to`,
+both 0–100 of the whole timeline (one quarter of a year = 25, one month ≈ 8.33). Use one colour
+per workstream (`purple` `cyan` `teal` `magenta`) and `gray` for work that is done; up to
+about 8 tasks. Widen the label column with `style="--label: 260px"` on `.roadmap`.
+
+```html
+<div class="roadmap">
+<div class="scale"><span>Q1 2025</span><span>Q2 2025</span><span>Q3 2025</span><span>Q4 2025</span></div>
+<div class="task gray" style="--from: 0; --to: 15"><b>Discovery</b><span></span></div>
+<div class="task" style="--from: 10; --to: 55"><b>Platform build</b><span></span></div>
+<div class="task teal" style="--from: 65; --to: 100"><b>Migration</b><span></span></div>
+</div>
+```
+
 ### Tag
 
 ```html

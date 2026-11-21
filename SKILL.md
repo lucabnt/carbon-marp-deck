@@ -112,6 +112,17 @@ Replace every starter placeholder (`Subtitle`, `First topic`, `Replace this with
 - The closing slide is text: `# Thank you` (or a closing line in the deck's language), an
   optional `##` subtitle and the `.lead-author` contact block. No logos or marks.
 - Do not invent facts, figures or sources; mark missing data as a placeholder for the user.
+- **Charts:** for a few numbers use `.kpi`; to compare up to about 8 values of one series use
+  the bar chart `.bars` (`.bars vertical` for a time series); for parts of a whole per
+  category `.bars stacked`, for two to four series per category `.bars grouped`, both with
+  a `.legend`. Compute each `--v` as value ÷ largest × 100, rounded (stacked: segment ÷
+  largest bar total × 100), so the largest bar is 100. One measure against its scale or a
+  target: `.meter` (`--t` + `<u></u>` for the target, `.proportional` for parts of a
+  capacity). Plans and timelines: `.roadmap` with `.task` bars from `--from` to `--to`
+  (0–100 of the timeline). Add a `.small` line with what is measured and the source. Exact
+  figures to read belong in a table. Other charts (lines, pies, scatter) are not built in: use a table, or a chart image the user supplies,
+  placed with `![alt](assets/chart.png)` (a picture in the PPTX). Never `<svg>`, `<canvas>`
+  or chart scripts: the allowlist removes them.
 - Use only the pictograms in `SKILL_DIR/assets/pictograms/`; do not add logos or images whose
   licence is unknown.
 - For anything not covered here, follow the [Carbon Design System](https://carbondesignsystem.com/)
@@ -131,7 +142,7 @@ as a warning. The documented patterns remain the safest and the most editable:
 1. **Copy snippets from `references/components.md`; do not invent HTML.** Allowed: Markdown headings
    (`#`, `##`, `###`), paragraphs, `-` lists, `1.` lists, pipe tables, `>` quotes, fenced code,
    `**bold**`, `*italic*`, `` `code` ``, links, and the components `.cols`/`.cols3`, `.card`,
-   `.kpi`/`.kpi-label`, `.pill`, `.band`, `.small`, `.flow`/`.node`/`.arrow`, `.process`/`.step`,
+   `.kpi`/`.kpi-label`, `.bars`/`.bar`/`.legend`, `.meter`, `.roadmap`/`.scale`/`.task`, `.pill`, `.band`, `.small`, `.flow`/`.node`/`.arrow`, `.process`/`.step`,
    `img.pictogram`, `.toc-grid`, `.lead-author`, and the slide class `compact`.
 2. **One component per line**, tags in the documented order:
    `<div class="node cyan"><b>Label</b><small>detail</small></div>`,

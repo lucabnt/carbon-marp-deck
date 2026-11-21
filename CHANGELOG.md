@@ -6,6 +6,22 @@ All notable changes to this project. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Bar chart component (`.bars` › `.bar`, `.bars.vertical`): one series after the Carbon simple
+  bar chart, drawn with boxes so the PPTX keeps native shapes and editable text; colour
+  modifiers from the categorical palette and `.gray` to mute bars. Stacked variant
+  (`.bars.stacked`, horizontal and vertical) with the categorical palette in order and a
+  `.legend`. Grouped variant (`.bars.grouped`, horizontal and vertical) for two to four
+  series per category.
+- Meter component (`.meter`) after the Carbon meter chart, with a target mark (bullet chart),
+  status colours and a proportional variant (`.meter.proportional`).
+- Roadmap component (`.roadmap` › `.scale` + `.task`): floating bars on a timeline.
+- Snippets, style guide, `SKILL.md` guidance on charts, examples `08-bar-charts.md` and
+  `09-meters-and-roadmaps.md`, and lint warnings for chart values out of range, missing
+  bar, track or target elements, charts not scaled to 100, bars with different numbers of
+  series, missing legends and roadmap tasks that end before they start.
+
 ## [1.0.0] — 2026-11-21
 
 First public release.

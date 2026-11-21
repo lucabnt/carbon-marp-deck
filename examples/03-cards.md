@@ -335,6 +335,274 @@ style: |
   .kpi       { font-size: 54px; font-weight: 300; line-height: 1.19; color: var(--cds-text-primary); }
   .kpi-label { font-size: 16px; line-height: 1.5; color: var(--cds-text-secondary); }
 
+  /* ── COMPONENT: bar chart (.bars / .bar) ───────────────────────────────────── */
+  /* One series, after the Carbon simple bar chart, built from boxes so the PPTX */
+  /* keeps native shapes and editable text. One .bar per line:                  */
+  /*   <div class="bar" style="--v: 62"><b>Label</b><span></span><small>412</small></div> */
+  /* --v = bar length 0-100 as a share of the largest value (largest = 100).    */
+  /* Values are labelled on the bars, so there are no axes or gridlines.        */
+  /* Horizontal (default): label column 160px (set --label on .bars to change), */
+  /* body-compact-02 16/22 text-secondary; 24px bar; value heading-compact-02   */
+  /* 16/22 SemiBold text-primary, 8px after the end of the bar.                 */
+  /* .vertical: columns half as wide as their slot over a 1px border-strong     */
+  /* baseline, 280px for --v: 100; labels at most two lines.                    */
+  /* Fill Blue 60; .purple .cyan .teal .magenta (categorical palette) on .bars  */
+  /* or on one .bar; .gray (Gray 30) mutes the bars that are not the point.     */
+  .bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .bar {
+    display: grid;
+    grid-template-columns: var(--label, 160px) 1fr;
+    column-gap: 16px;
+    align-items: center;
+    font-size: 16px;
+    line-height: 1.38;
+  }
+  .bar b {
+    grid-row: 1; grid-column: 1;
+    font-weight: 400;
+    color: var(--cds-text-secondary);
+  }
+  .bar span {
+    grid-row: 1; grid-column: 2;
+    justify-self: start;
+    display: block;
+    height: 24px;
+    width: calc((100% - 80px) * var(--v, 0) / 100);
+    background: var(--cds-accent-blue);
+  }
+  .bar small {
+    grid-row: 1; grid-column: 2;
+    justify-self: start;
+    margin-left: calc((100% - 80px) * var(--v, 0) / 100 + 8px);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--cds-text-primary);
+  }
+  .bars.vertical {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 0;
+  }
+  .bars.vertical .bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  .bars.vertical .bar small { order: 1; margin: 0 0 8px; }
+  .bars.vertical .bar span  { order: 2; align-self: center; width: 50%; height: calc(2.8px * var(--v, 0)); }
+  .bars.vertical .bar b     { order: 3; box-sizing: border-box; min-height: 52px; padding-top: 8px;
+                              border-top: 1px solid var(--cds-border-strong-01); }
+  .bars.purple .bar span,  .bar.purple span  { background: var(--cds-accent-purple); }
+  .bars.cyan .bar span,    .bar.cyan span    { background: var(--cds-accent-cyan); }
+  .bars.teal .bar span,    .bar.teal span    { background: var(--cds-accent-teal); }
+  .bars.magenta .bar span, .bar.magenta span { background: var(--cds-accent-magenta); }
+  .bar.blue span                             { background: var(--cds-accent-blue); }
+  .bar.gray span                             { background: #c6c6c6; }   /* Gray 30 */
+
+  /* ── COMPONENT: stacked bar chart (.bars.stacked) + legend (.legend) ───────── */
+  /* One span per segment, each with its own --v; the longest bar totals 100   */
+  /* (every bar totals 100 for a percentage chart). Segments take the Carbon    */
+  /* categorical palette strictly in order: Purple 70, Cyan 50, Teal 70,        */
+  /* Magenta 70, Red 50; a 1px white divider separates them. <small> = total.   */
+  /*   <div class="bar"><b>Q1</b><span style="--v: 40"></span><span style="--v: 22"></span><small>620</small></div> */
+  /* Vertical (.bars.vertical.stacked): the first segment sits on the baseline. */
+  /* .legend: one <span><i></i>Name</span> per segment, same order and colours; */
+  /* 12px squares, body-compact-01 14/18 text-secondary.                         */
+  .bars.stacked .bar { display: flex; align-items: center; column-gap: 0; }
+  .bars.stacked .bar b { flex: 0 0 var(--label, 160px); margin-right: 16px; }
+  .bars.stacked .bar span {
+    flex: none;
+    box-sizing: border-box;
+    width: calc((100% - var(--label, 160px) - 96px) * var(--v, 0) / 100);
+    border-right: 1px solid var(--cds-background);
+  }
+  .bars.stacked .bar small { margin-left: 8px; }
+  .bars.vertical.stacked .bar { flex: 1; flex-direction: column-reverse; justify-content: flex-start;
+                                align-items: stretch; }
+  .bars.vertical.stacked .bar b     { flex: none; order: 1; margin-right: 0; }
+  .bars.vertical.stacked .bar span  { order: 2; width: 50%; border-right: 0;
+                                      border-top: 1px solid var(--cds-background); }
+  .bars.vertical.stacked .bar small { order: 3; margin: 0 0 8px; }
+  .bars.stacked .bar span:nth-of-type(1), .legend span:nth-of-type(1) i { background: var(--cds-accent-purple); }
+  .bars.stacked .bar span:nth-of-type(2), .legend span:nth-of-type(2) i { background: var(--cds-accent-cyan); }
+  .bars.stacked .bar span:nth-of-type(3), .legend span:nth-of-type(3) i { background: var(--cds-accent-teal); }
+  .bars.stacked .bar span:nth-of-type(4), .legend span:nth-of-type(4) i { background: var(--cds-accent-magenta); }
+  .bars.stacked .bar span:nth-of-type(5), .legend span:nth-of-type(5) i { background: #fa4d56; }   /* Red 50 (categorical 05) */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    margin: 16px 0 8px;
+    font-size: 14px;
+    line-height: 1.29;
+    letter-spacing: 0.16px;
+    color: var(--cds-text-secondary);
+  }
+  .legend span { display: flex; align-items: center; gap: 8px; }
+  .legend i    { display: block; width: 12px; height: 12px; }
+
+  /* ── COMPONENT: grouped bar chart (.bars.grouped) ──────────────────────────── */
+  /* Two to four series side by side per category, coloured like the stacked   */
+  /* chart (categorical palette in order) and named by a .legend. One span per */
+  /* series, each with its value inside; the largest single bar is --v: 100:   */
+  /*   <div class="bar"><b>Europe</b><span style="--v: 100"><small>412</small></span><span style="--v: 74"><small>305</small></span></div> */
+  /* Horizontal: 16px bars 4px apart, value 8px after each bar.                 */
+  /* Vertical (.bars.vertical.grouped): columns side by side, value above.     */
+  .bars.grouped .bar { row-gap: 0; }
+  .bars.grouped .bar b { grid-row: 1 / span 4; align-self: center; }
+  .bars.grouped .bar span {
+    grid-row: auto;
+    position: relative;
+    height: 16px;
+    margin: 2px 0;
+  }
+  .bars.grouped .bar span small {
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    margin: -11px 0 0;
+    white-space: nowrap;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .bars.vertical.grouped { padding-top: 24px; }
+  .bars.vertical.grouped .bar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 8px;
+  }
+  .bars.vertical.grouped .bar span {
+    order: 1;
+    flex: 1 1 0;
+    align-self: flex-end;
+    width: auto;
+    max-width: 48px;
+    height: calc(2.8px * var(--v, 0));
+    margin: 0 1px;
+  }
+  .bars.vertical.grouped .bar b { order: 2; flex: 0 0 calc(100% + 16px); margin: 0 -8px; }
+  .bars.vertical.grouped .bar span small {
+    left: 50%; top: auto; bottom: 100%;
+    width: 80px;
+    margin: 0 0 4px -40px;
+    text-align: center;
+  }
+  .bars.grouped .bar span:nth-of-type(1) { background: var(--cds-accent-purple); }
+  .bars.grouped .bar span:nth-of-type(2) { background: var(--cds-accent-cyan); }
+  .bars.grouped .bar span:nth-of-type(3) { background: var(--cds-accent-teal); }
+  .bars.grouped .bar span:nth-of-type(4) { background: var(--cds-accent-magenta); }
+
+  /* ── COMPONENT: meter (.meter) — Carbon meter chart ────────────────────────── */
+  /* Title (heading-compact-02 16/22 SemiBold) and value (16/22 text-secondary) */
+  /* above a 16px track (layer-accent-01) filled to --v (0-100):              */
+  /*   <div class="meter" style="--v: 72"><b>Budget used</b><small>€ 720k of € 1 M</small><span><span></span></span></div> */
+  /* Target (bullet chart): add --t and a <u></u> in the track:                */
+  /*   <div class="meter" style="--v: 72; --t: 85">…<span><span></span><u></u></span></div> */
+  /* Fill Blue 60, .purple .cyan .teal .magenta, or status .success .warn       */
+  /* .error (support-* tokens). .proportional: one inner span per part, each   */
+  /* with its own --v, categorical palette in order, named by a .legend.       */
+  .meter {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    row-gap: 8px;
+    column-gap: 16px;
+    margin: 16px 0 24px;
+    font-size: 16px;
+    line-height: 1.38;
+  }
+  .meter b     { font-weight: 600; color: var(--cds-text-primary); }
+  .meter small { justify-self: end; font-size: 16px; color: var(--cds-text-secondary); }
+  .meter > span {
+    grid-column: 1 / -1;
+    position: relative;
+    display: flex;
+    height: 16px;
+    background: var(--cds-layer-accent-01);
+  }
+  .meter > span > span {
+    display: block;
+    flex: none;
+    width: calc(var(--v, 0) * 1%);
+    background: var(--cds-accent-blue);
+  }
+  .meter > span > u {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    left: calc(var(--t, 0) * 1% - 1px);
+    width: 2px;
+    background: var(--cds-text-primary);
+  }
+  .meter.purple  > span > span { background: var(--cds-accent-purple); }
+  .meter.cyan    > span > span { background: var(--cds-accent-cyan); }
+  .meter.teal    > span > span { background: var(--cds-accent-teal); }
+  .meter.magenta > span > span { background: var(--cds-accent-magenta); }
+  .meter.success > span > span { background: var(--cds-support-success); }
+  .meter.warn    > span > span { background: var(--cds-support-warning); }
+  .meter.error   > span > span { background: var(--cds-support-error); }
+  .meter.proportional > span > span { box-sizing: border-box; border-right: 1px solid var(--cds-background); }
+  .meter.proportional > span > span:nth-of-type(1) { background: var(--cds-accent-purple); }
+  .meter.proportional > span > span:nth-of-type(2) { background: var(--cds-accent-cyan); }
+  .meter.proportional > span > span:nth-of-type(3) { background: var(--cds-accent-teal); }
+  .meter.proportional > span > span:nth-of-type(4) { background: var(--cds-accent-magenta); }
+  .meter.proportional > span > span:nth-of-type(5) { background: #fa4d56; }   /* Red 50 */
+
+  /* ── COMPONENT: roadmap (.roadmap / .scale / .task) — floating bars ────────── */
+  /* A Gantt-style timeline after the Carbon floating bar chart. .scale names  */
+  /* the periods (equal widths); each .task is a bar from --from to --to, both  */
+  /* 0-100 as a share of the whole timeline:                                   */
+  /*   <div class="scale"><span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span></div> */
+  /*   <div class="task" style="--from: 0; --to: 40"><b>Discovery</b><span></span></div> */
+  /* Label column 200px (--label on .roadmap); rows 40px with a 1px            */
+  /* border-subtle rule; 16px bars; scale label-02 14/18 text-secondary with   */
+  /* 1px border-subtle period separators. Fill Blue 60, .purple .cyan .teal    */
+  /* .magenta for workstreams, .gray for work that is done.                     */
+  .roadmap { margin: 16px 0; font-size: 16px; line-height: 1.38; }
+  .roadmap .scale {
+    display: flex;
+    margin-left: calc(var(--label, 200px) + 16px);
+    border-bottom: 1px solid var(--cds-border-strong-01);
+  }
+  .roadmap .scale span {
+    flex: 1 1 0;
+    padding: 0 8px 8px;
+    border-left: 1px solid var(--cds-border-subtle-01);
+    font-size: 14px;
+    line-height: 1.29;
+    letter-spacing: 0.16px;
+    color: var(--cds-text-secondary);
+  }
+  .roadmap .task {
+    display: grid;
+    grid-template-columns: var(--label, 200px) 1fr;
+    column-gap: 16px;
+    align-items: center;
+    min-height: 40px;
+    border-bottom: 1px solid var(--cds-border-subtle-01);
+  }
+  .roadmap .task b { font-weight: 400; color: var(--cds-text-primary); padding: 8px 0; }
+  .roadmap .task span {
+    display: block;
+    height: 16px;
+    margin-left: calc(var(--from, 0) * 1%);
+    width: calc((var(--to, 0) - var(--from, 0)) * 1%);
+    background: var(--cds-accent-blue);
+  }
+  .roadmap .task.purple  span { background: var(--cds-accent-purple); }
+  .roadmap .task.cyan    span { background: var(--cds-accent-cyan); }
+  .roadmap .task.teal    span { background: var(--cds-accent-teal); }
+  .roadmap .task.magenta span { background: var(--cds-accent-magenta); }
+  .roadmap .task.gray    span { background: #c6c6c6; }   /* Gray 30 */
+
   /* ── COMPONENT: tag (.pill) — Carbon Tag ───────────────────────────────────── */
   /* tag-background-* / tag-color-* tokens, fully rounded. Default blue;        */
   /* modifiers .cyan .teal .purple .magenta .green .red .gray.                  */

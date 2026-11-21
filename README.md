@@ -37,7 +37,7 @@ Write the deck in Markdown, or let your coding agent write it from a brief, and 
 
 - **A Carbon-style Marp theme** ([`themes/carbon.css`](themes/carbon.css)) whose values all come from Carbon tokens: the White, Gray 10, Gray 90 and Gray 100 themes, the Carbon type scale in Plex, the spacing scale and 2x grid gutters, Carbon tag and notification colours, and the Markdown element styles of [`@carbon/element-styles`](https://github.com/carbon-design-system/carbon-element-styles).
 - **Slide layouts**: cover (three themes), contents, section divider, content, closing, backup.
-- **Components**: two and three column grids, cards (Carbon tiles), KPIs, tags, notification bands, flow diagrams, process diagrams, data tables, pull quotes.
+- **Components**: two and three column grids, cards (Carbon tiles), KPIs, bar charts, meters, roadmaps, tags, notification bands, flow diagrams, process diagrams, data tables, pull quotes.
 - **Plex bundled** (SIL OFL): every PDF renders in the Carbon typeface, installed or not.
 - **1,429 Carbon pictograms** (Apache-2.0) with a keyword search.
 - **An agent skill** ([`SKILL.md`](SKILL.md)): an agent turns a brief into a finished deck, lints it, exports it and checks the previews.
@@ -206,6 +206,9 @@ Set a slide class with `<!-- _class: name -->` at the top of the slide.
 | Two / three columns | `.cols` / `.cols3` | 2x grid, 32 / 16 px gutters |
 | Card | `.card` + `.cyan` `.teal` `.purple` `.magenta`, `.sm` | Tile with a category stroke |
 | KPI | `.kpi` + `.kpi-label` | 54 px Light number, secondary label |
+| Bar chart | `.bars` › `.bar` (`--v` 0–100), `.vertical`, `.stacked` / `.grouped` + `.legend`, colour modifiers, `.gray` | Carbon simple, stacked and grouped bar charts, as native shapes |
+| Meter | `.meter` (`--v`), target `--t` + `<u>`, `.proportional`, status `.success` `.warn` `.error` | Carbon meter and bullet charts |
+| Roadmap | `.roadmap` › `.scale` + `.task` (`--from`, `--to`) | Carbon floating bar chart, as a Gantt timeline |
 | Tag | `.pill` + `.cyan` `.teal` `.purple` `.magenta` `.green` `.red` `.gray` | Carbon Tag |
 | Band | `.band` + `.warn` `.success` `.error` | Inline notification (low contrast) with its status icon |
 | Flow diagram | `.flow` › `.node` + `.arrow` (colour modifiers) | Outlined boxes, category tints |
@@ -294,6 +297,8 @@ npx --yes @marp-team/marp-cli@4.5.1 --no-stdin my-deck.md --pdf --config-file th
 | [`05-flow-diagrams.md`](examples/05-flow-diagrams.md) | flows, nodes, arrows | [PDF](examples/pdf/05-flow-diagrams.pdf) · [PPTX](examples/pptx/05-flow-diagrams.pptx) |
 | [`06-tables-and-quotes.md`](examples/06-tables-and-quotes.md) | tables, quotes, `ruled`, footnotes | [PDF](examples/pdf/06-tables-and-quotes.pdf) · [PPTX](examples/pptx/06-tables-and-quotes.pptx) |
 | [`07-process-diagrams.md`](examples/07-process-diagrams.md) | process steps, pictograms | [PDF](examples/pdf/07-process-diagrams.pdf) · [PPTX](examples/pptx/07-process-diagrams.pptx) |
+| [`08-bar-charts.md`](examples/08-bar-charts.md) | bar charts: simple, stacked and grouped, horizontal and vertical | [PDF](examples/pdf/08-bar-charts.pdf) · [PPTX](examples/pptx/08-bar-charts.pptx) |
+| [`09-meters-and-roadmaps.md`](examples/09-meters-and-roadmaps.md) | meters, targets, proportional meter, roadmap | [PDF](examples/pdf/09-meters-and-roadmaps.pdf) · [PPTX](examples/pptx/09-meters-and-roadmaps.pptx) |
 
 Regenerate them with `python tools/build_examples.py` (or `npm run build`).
 

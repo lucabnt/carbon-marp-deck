@@ -275,6 +275,45 @@ A Carbon tile: layer-01 background, 16 px padding, square corners, 16/24 text, `
 Number 54/64 Light in text-primary; label 16/24 text-secondary below. Keep numbers short
 (about 8 characters). Up to three pairs per column.
 
+### Bar chart — `.bars` › `.bar`
+
+A single-series bar chart after the Carbon simple bar chart, built from boxes and text so
+the PPTX keeps native rectangles and editable text instead of a picture. Horizontal by
+default: label column 160 px, 16/22 text-secondary; 24 px bars, 12 px apart; value 16/22
+SemiBold text-primary, 8 px after the end of the bar. `.vertical`: columns half as wide as
+their slot, up to 280 px high, over a 1 px border-strong baseline; value above, label below.
+The values are written on the bars, so there are no axes or gridlines. Fill Blue 60 by
+default, or one hue of the categorical palette (`.purple` `.cyan` `.teal` `.magenta`) for
+the whole chart; `.gray` (Gray 30) mutes the bars around the one the title is about.
+The bar length (`--v`, 0–100) is computed by the author: the chart does not scale itself,
+and editing a value in the PPTX does not resize its bar.
+
+`.stacked` follows the Carbon stacked bar chart: one segment per category, coloured with the
+categorical palette strictly in its order (Purple 70, Cyan 50, Teal 70, Magenta 70, Red 50),
+separated by a 1 px divider in the background colour, total after (or above) the bar. Up to
+five segments. `.legend` names them: 12 px squares, 8 px from the name, 24 px between items,
+14/18 text-secondary, above the chart.
+
+`.grouped` follows the Carbon grouped bar chart: two to four series per category, same
+palette order as the stacked chart. Horizontal: 16 px bars 4 px apart, 14/22 SemiBold value
+after each bar. Vertical: columns up to 48 px wide, value above.
+
+### Meter — `.meter`
+
+After the Carbon meter chart: title heading-compact-02 16/22 SemiBold, value 16/22
+text-secondary on the right, then a 16 px track in layer-accent-01 filled to `--v`. The
+target of a bullet chart is a 2 px text-primary mark that overhangs the track by 4 px.
+Status fills use the support tokens (`.success` Green 50, `.warn` Yellow 30, `.error` Red 60),
+as Carbon meters do for statuses. `.proportional` splits the fill into categorical colours
+with 1 px dividers, like the Carbon proportional meter.
+
+### Roadmap — `.roadmap`, `.scale`, `.task`
+
+After the Carbon floating bar chart, laid out as a Gantt timeline. Scale 14/18
+text-secondary over a 1 px border-strong line, periods separated by 1 px border-subtle;
+label column 200 px, 16/22 text-primary; rows at least 40 px with a 1 px border-subtle rule
+(as table rows); 16 px bars from `--from` to `--to`.
+
 ### Tag — `.pill`
 
 A Carbon tag: tag background and text tokens, fully rounded, 16/24, 4 × 12 px padding.
@@ -387,6 +426,9 @@ Both options are Carbon sizes; only the choice of size per slide is the template
 | Category stroke on cards and steps (4 px) | Tiles without strokes | Marks the category of a tile at a glance; the colours are the first entries of the Carbon categorical palette, which is designed for telling categories apart. |
 | Category tints on flow nodes and steps | The 10 grade of each hue | Same coding as the strokes, as a fill. |
 | Flow diagrams, process steps, KPIs | No equivalent components (the progress indicator is closest to the steps) | Common slide content; built from tiles, borders and type tokens. |
+| Bar chart from boxes (`.bars`) | Carbon Charts, an SVG/JavaScript library | Marp decks allow no scripts or SVG markup, and a chart drawn with boxes stays native shapes and editable text in the PPTX. It follows the simple bar chart: one series, categorical colours, labelled values. |
+| Chart sizes: 16 px meter track, 24 px bars, 16 px labels | Carbon Charts: thinner tracks and 12 px axis labels, values in tooltips | Slides are read from a distance and are not interactive, so values are written on the chart and text uses the body sizes of the deck. |
+| `.gray` bars and tasks (Gray 30) | No muted series colour in the palettes | Lets one bar or task carry the message; done work in a roadmap reads as finished. |
 | `ruled` (8 px Blue 60 left edge) and `bk` (4 px Gray 50 top edge) | No such borders | Optional markers: emphasis for a slide, and appendix slides that must not be mistaken for the main talk. |
 | Default pictogram colour Gray 100, sizes 80 and 120 px | Pictograms in a colour that contrasts with the background, 48 px minimum | Gray 100 keeps colour for meaning; the sizes stay on the 8 px grid. |
 | Band icon position and spacing | Inline notification with an optional close button and actions | Slides are not interactive: no close button or actions; the icon and text positions follow the notification layout. |
