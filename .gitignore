@@ -1,0 +1,49 @@
+# OS / editor artefacts
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# Node (Marp CLI local install)
+node_modules/
+npm-debug.log*
+# root lockfile only: pptx-export/dom/package-lock.json is committed (pinned puppeteer-core)
+/package-lock.json
+
+# Marp build output (uncommitted renders)
+# examples/pdf/*.pdf and examples/pdf/*.html are intentionally tracked.
+# To exclude generated files from git, uncomment:
+# *.pdf
+# *.html
+
+# Temp / scratch
+*.tmp
+*.bak
+# Python (pptx-export/)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Office temp / lock files and scratch copies
+~$*
+*_tmp.pptx
+*_tmp.potx
+
+# PPTX export: scratch output stays local
+test-output/
+
+# Copies of assets/fonts/ made by the scripts next to the example and test decks
+examples/assets/
+tests/assets/
+
+# Intermediate HTML of the PPTX converter (--keep-html)
+.*.dom.html

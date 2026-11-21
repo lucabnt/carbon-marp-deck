@@ -1,0 +1,52 @@
+carbon-marp-deck
+Copyright 2026 The carbon-marp-deck contributors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+It is an unofficial project and is not affiliated with or endorsed by the
+Carbon Design System project.
+
+Third-party material included in this repository
+------------------------------------------------
+
+Carbon pictograms (assets/pictograms/svg/, assets/pictograms/catalog.csv)
+  Source:    @carbon/pictograms 12.88.0, https://github.com/carbon-design-system/carbon
+  Licence:   Apache License, Version 2.0 (assets/pictograms/LICENSE-CARBON)
+  Copyright: the Carbon Design System contributors
+  Changes:   glyphs wrapped in a left-trim transform; pictograms of products,
+             brands, third-party logos and named sites removed
+             (tools/pictogram_exclude.txt)
+
+Carbon icons (embedded in themes/carbon.css as data URIs, status icons of .band)
+  Source:    @carbon/icons 11.92.0 (information--filled, warning--alt--filled,
+             checkmark--filled, error--filled), https://github.com/carbon-design-system/carbon
+  Licence:   Apache License, Version 2.0
+  Copyright: the Carbon Design System contributors
+  Changes:   fill colours set to the Carbon support colours
+
+Carbon design tokens (themes/carbon.css and the decks that embed it)
+  Colour, type, spacing, tag and notification values from @carbon/colors,
+  @carbon/themes, @carbon/type and @carbon/layout; Markdown element styles
+  modelled on @carbon/element-styles
+  (https://github.com/carbon-design-system/carbon-element-styles).
+  Licence:   Apache License, Version 2.0
+  Copyright: the Carbon Design System contributors
+
+Plex fonts (assets/fonts/*.woff2)
+  Source:    official Plex releases: Sans 1.3.6, Serif 2.0.0, Mono 2.5.0
+             (unmodified woff2 files; renamed PlexSans-*.woff2, PlexSerif-*, PlexMono-*)
+  Licence:   SIL Open Font License, Version 1.1 (assets/fonts/LICENSE-OFL.txt)
+  Copyright: Copyright © 2017 IBM Corp. with Reserved Font Name "Plex"
+  The fonts are distributed under the OFL, not under the Apache License.
+
+Not bundled
+-----------
+
+Marp CLI, puppeteer-core, python-pptx, Pillow and PyMuPDF are installed from their
+registries and keep their own licences.
+
+Trademarks
+----------
+
+Carbon, Plex, IBM Bob and other product names are trademarks of their respective
+owners. They are used only to identify the design system, the typeface and
+compatible tools; no endorsement is implied.

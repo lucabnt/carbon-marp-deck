@@ -1,0 +1,10 @@
+{
+  "name": "pptx-dom-extract",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Headless Chrome runner used by dom_to_pptx.py to measure rendered Marp slides",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "puppeteer-core": "24.43.1"
+  }
+}

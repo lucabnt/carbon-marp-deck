@@ -1,0 +1,24 @@
+{
+  "name": "carbon-marp-deck",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "description": "Agent skill and Marp template for slide decks in the style of the Carbon Design System (unofficial)",
+  "homepage": "https://github.com/lucabnt/carbon-marp-deck#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucabnt/carbon-marp-deck.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lucabnt/carbon-marp-deck/issues"
+  },
+  "scripts": {
+    "build": "python tools/build_examples.py",
+    "build:pdf": "python tools/build_examples.py --pdf-only",
+    "check": "python tools/check_examples.py",
+    "doctor": "python scripts/check_env.py"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "4.5.1"
+  }
+}

@@ -1,0 +1,219 @@
+{
+ "00-full-showcase": {
+  "shapes": [
+   5,
+   29,
+   3,
+   5,
+   5,
+   3,
+   19,
+   3,
+   19,
+   21,
+   48,
+   3,
+   19,
+   31,
+   3,
+   19,
+   15,
+   56,
+   3,
+   26,
+   20,
+   40,
+   3,
+   91,
+   58,
+   24,
+   22,
+   3,
+   46,
+   32,
+   18,
+   5
+  ],
+  "notes": [
+   "FULL COMPONENT SHOWCASE — Cover",
+   "",
+   "SECTION 01 — Title & Structure Slides",
+   "Cover slide (lead plain) — White theme",
+   "Cover slide (lead dark) — Gray 100 theme",
+   "Backup section opener (backup) — Gray 90 theme",
+   "Backup content slide (bk) — White theme, Gray 50 top edge",
+   "SECTION 02 — Two-Column Layouts",
+   "Pattern A: .cols — equal two-column layout",
+   "Pattern B: .cols3 — equal three-column layout",
+   "Pattern C: .cols with blockquote and .band",
+   "SECTION 03 — Card Components",
+   "Pattern A: All five card colour variants in a 2×2 layout",
+   "Pattern B: .cols3 with .card.sm compact cards",
+   "SECTION 04 — KPI, Metrics, Pills and Bands",
+   "Pattern A: Two KPIs left + narrative right",
+   "Pattern B: Four KPIs in a 2×2 grid",
+   "Pattern C: .pill labels + .band.warn",
+   "SECTION 05 — Flow Diagrams",
+   "Pattern A: Linear five-node flow — outlined node colour variants",
+   "Pattern B: Bidirectional arrow and a coloured arrow (.arrow.magenta)",
+   "Pattern C: Architecture diagram with .band and two-column context",
+   "SECTION 06 — Tables, Blockquotes, and .small text",
+   "Pattern A: Comparison table (3 options)",
+   "Pattern B: Table + column layout",
+   "Pattern C: Blockquote variants and .small footnotes",
+   "Pattern D: Horizontal rule and ruled slide variant",
+   "SECTION 07 — Process Diagrams and Pictograms",
+   "Pattern A: 5-step process — all colour variants",
+   "Pattern B: 3-step approach (shorter variant)",
+   "Pattern C: Pictograms inline with cards",
+   "Closing slide (end) — Gray 100 theme"
+  ],
+  "warnings": []
+ },
+ "01-title-slides": {
+  "shapes": [
+   5,
+   5,
+   5,
+   25,
+   2,
+   4,
+   3,
+   18,
+   5
+  ],
+  "notes": [
+   "EXAMPLE 01 — Title & Structure Slides\n\nDemonstrates: lead, lead plain, lead dark, toc, section, backup, end\n\nCover slide (lead) — Gray 10 theme",
+   "Cover slide (lead plain) — White theme",
+   "Cover slide (lead dark) — Gray 100 theme",
+   "Contents slide (toc) — \"Contents\" layout — column-first order",
+   "Section divider (section) — Gray 100 theme",
+   "Section divider with optional subtitle paragraph",
+   "Backup section opener (backup) — Gray 90 theme",
+   "Backup content slide (bk) — White theme, Gray 50 top edge",
+   "Closing slide (end) — Gray 100 theme"
+  ],
+  "warnings": []
+ },
+ "02-two-column": {
+  "shapes": [
+   18,
+   14,
+   20,
+   47
+  ],
+  "notes": [
+   "EXAMPLE 02 — Two-Column Layouts (.cols and .cols3)\n\nPattern A: .cols — equal two-column layout",
+   "Pattern B: .cols with mixed rich content",
+   "Pattern C: .cols3 — equal three-column layout",
+   "Pattern D: .cols with blockquote and .band"
+  ],
+  "warnings": []
+ },
+ "03-cards": {
+  "shapes": [
+   18,
+   46,
+   30
+  ],
+  "notes": [
+   "EXAMPLE 03 — Card Components (.card and variants)\n\nPattern A: All five card colour variants in a 2×2 + 1 layout",
+   "Pattern B: Magenta card + .card.sm compact variant",
+   "Pattern C: .cols3 with .card.sm compact cards"
+  ],
+  "warnings": []
+ },
+ "04-kpi-and-metrics": {
+  "shapes": [
+   18,
+   14,
+   55
+  ],
+  "notes": [
+   "EXAMPLE 04 — KPI, Metrics, Pills and Bands\n\nComponents: .kpi, .kpi-label, .pill, .band, .band.warn\n\nPattern A: Two KPIs left + narrative right",
+   "Pattern B: Four KPIs in a 2×2 grid",
+   "Pattern C: .pill labels + .band.warn"
+  ],
+  "warnings": []
+ },
+ "05-flow-diagrams": {
+  "shapes": [
+   25,
+   19,
+   39
+  ],
+  "notes": [
+   "EXAMPLE 05 — Flow Diagrams (.flow, .node variants, .arrow and its colours)\n\nPattern A: Linear five-node flow — outlined node colour variants",
+   "Pattern B: Bidirectional arrow and a coloured arrow (.arrow.magenta)",
+   "Pattern C: Architecture diagram with .band and two-column context"
+  ],
+  "warnings": []
+ },
+ "06-tables-and-quotes": {
+  "shapes": [
+   90,
+   57,
+   23,
+   21,
+   206
+  ],
+  "notes": [
+   "EXAMPLE 06 — Tables, Blockquotes, and .small text\n\nPattern A: Comparison table (3 options)",
+   "Pattern B: Table + column layout",
+   "Pattern C: Blockquote variants and .small footnotes",
+   "Pattern D: Horizontal rule and ruled slide variant",
+   "Dense data slide: the compact class switches tables to Carbon size md (40px rows) and h3 to 20px"
+  ],
+  "warnings": []
+ },
+ "07-process-diagrams": {
+  "shapes": [
+   45,
+   31,
+   17
+  ],
+  "notes": [
+   "EXAMPLE 07 — Process Diagrams (.process / .step) and Pictogram usage\n\nPattern A: 5-step process — all colour variants",
+   "Pattern B: 3-step approach (shorter variant)",
+   "Pattern C: Pictograms inline with cards\n\nPictograms are decorative — alt=\"\" is correct for screen readers.\nUse the black variant on white/light backgrounds.\nUse the blue variant on dark backgrounds (section, backup).\nSize modifiers: pictogram (80px default) · pictogram sm (48px) · pictogram lg (120px)\nFull catalog: assets/pictograms/README.md"
+  ],
+  "warnings": []
+ },
+ "converter-cases": {
+  "shapes": [
+   3,
+   6,
+   19,
+   19,
+   11,
+   3,
+   4,
+   3
+  ],
+  "notes": [
+   "Speaker note for the cover: say hello.",
+   "First note line.\nSecond note line.",
+   "",
+   "",
+   "",
+   "",
+   "",
+   ""
+  ],
+  "warnings": [
+   "warning: slide 6: <video> is not exported",
+   "warning: slide 7: content runs 730px past the bottom margin and is cut off in the PDF (shorten it, use the compact slide class or split the slide)"
+  ]
+ },
+ "no-notes": {
+  "shapes": [
+   2,
+   4
+  ],
+  "notes": [
+   "",
+   ""
+  ],
+  "warnings": []
+ }
+}
