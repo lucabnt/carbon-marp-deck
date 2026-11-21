@@ -129,9 +129,23 @@ with `--v` from -100 to 100 and `neg` on the negative bars. Compute each `--v` a
   target: `.meter` (`--t` + `<u></u>` for the target, `.proportional` for parts of a
   capacity). Plans and timelines: `.roadmap` with `.task` bars from `--from` to `--to`
   (0–100 of the timeline). Add a `.small` line with what is measured and the source. Exact
-  figures to read belong in a table. Other charts (lines, pies, scatter) are not built in: use a table, or a chart image the user supplies,
-  placed with `![alt](assets/chart.png)` (a picture in the PPTX). Never `<svg>`, `<canvas>`
-  or chart scripts: the allowlist removes them.
+  figures to read belong in a table.
+- **Custom charts: pick the chart for the message, not from the list above.** Change over
+  time → line or area; ranking or comparison → bars; parts of a whole → stacked bars or a
+  donut (at most five parts); relationship between two measures → scatter; before and after
+  or a range per category → dumbbell; two moments for several items → slope; two categories
+  crossed → heatmap; anything else (treemap, sankey, cycle) → shapes in the SVG layer of a
+  `.plot`. When a component above draws that chart, use it; when none does, build
+  the chart in the same style with `.plot` (gridlines, axis labels, dots, ranges, zones and
+  notes in HTML at `--x` / `--y` 0–100; lines and areas from one text-free SVG layer you
+  write in `charts/` next to the deck; text never goes in the SVG), `.donut`, or a heatmap
+  table (`.heat s1`–`s9`), and
+  follow the custom-chart rules in `references/style-guide.md` (palette, gridlines, labels,
+  direct labelling). Never squeeze data into a built-in chart that misrepresents it, and do
+  not fall back to a table only because a chart is not built in. A chart image the user
+  supplies goes in with `![alt](assets/chart.png)` (a picture in the PPTX). Never `<svg>`,
+  `<canvas>` or chart scripts in the Markdown (the allowlist removes them); an SVG file
+  referenced by `<img>` is fine.
 - Use only the pictograms in `SKILL_DIR/assets/pictograms/`; do not add logos or images whose
   licence is unknown.
 - For anything not covered here, follow the [Carbon Design System](https://carbondesignsystem.com/)
@@ -151,7 +165,8 @@ as a warning. The documented patterns remain the safest and the most editable:
 1. **Copy snippets from `references/components.md`; do not invent HTML.** Allowed: Markdown headings
    (`#`, `##`, `###`), paragraphs, `-` lists, `1.` lists, pipe tables, `>` quotes, fenced code,
    `**bold**`, `*italic*`, `` `code` ``, links, and the components `.cols`/`.cols3`, `.card`,
-   `.kpi`/`.kpi-label`, `.bars`/`.bar`/`.legend`, `.meter`, `.roadmap`/`.scale`/`.task`, `.pill`, `.band`, `.small`, `.flow`/`.node`/`.arrow`, `.process`/`.step`,
+   `.kpi`/`.kpi-label`, `.bars`/`.bar`/`.legend`, `.meter`, `.roadmap`/`.scale`/`.task`,
+   `.plot` (with its SVG layer), `.donut`, `.heat` cells in a table, `.pill`, `.band`, `.small`, `.flow`/`.node`/`.arrow`, `.process`/`.step`,
    `.progress`, `.do`/`.dont`, `img.pictogram`, `.toc-grid` (with `.toc-item.current`), `.lead-author`,
    the `header` directive as a breadcrumb, and the slide classes `compact`, `statement`
    (`statement dark`) and `quote`.

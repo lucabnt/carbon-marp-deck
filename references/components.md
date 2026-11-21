@@ -394,6 +394,112 @@ about 8 tasks. Widen the label column with `style="--label: 260px"` on `.roadmap
 </div>
 ```
 
+### Custom chart (`.plot`)
+
+For the chart the message needs when no component above draws it: lines, areas, scatter,
+dumbbells, lollipops, slopes, ranges, annotated series. Pick the chart first (SKILL.md,
+*Custom charts*), then build it here; follow the rules in the style guide, *Custom charts*.
+
+Everything is placed in the plot area at `--x` (0 = left, 100 = right) and `--y` (0 =
+bottom, 100 = top). Map your data yourself: **(value − axis minimum) ÷ (axis maximum −
+axis minimum) × 100**, rounded to two decimals. Choose round axis limits (0–500, not
+0–463) and four to six gridlines.
+
+| Element | Draws | Variables |
+|---|---|---|
+| `<div class="y" style="--y: N">label</div>` | gridline + y-axis label; add `zero` to the baseline | `--y` |
+| `<span class="x" style="--x: N">label</span>` | x-axis label under the plot | `--x` |
+| `<img class="layer" src="charts/….svg" alt="">` | lines, areas, curves: the SVG layer | — |
+| `<span class="dot" style="--x: N; --y: N"></span>` | 8 px point; `lg` = 14 px for scatter and dumbbells | `--x` `--y` |
+| `<span class="range" style="--x: A; --x2: B; --y: N"></span>` | horizontal segment (dumbbell, range); `vertical` with `--y` `--y2` (lollipop stem) | `--t` thickness, 2px |
+| `<span class="zone" style="--x: A; --x2: B"></span>` | Gray 10 area: a forecast, a period, a target band (`--y` `--y2` to limit it) | — |
+| `<span class="note" style="--x: N; --y: N">text</span>` | label right of the point; `left`, `above`, `above left`, `above right`: place it on the side the lines do not cross | — |
+
+Colours on `.dot`, `.range` and `.note`: *(none)* Blue 60 for one series; `purple` `cyan`
+`teal` `magenta` `red` in this order for several series; `gray` for context. On `.plot`:
+`--h` plot height (default 320px), `--axis` width of the y-label column (default 56px,
+160px or more for category names), `--end` right gutter for labels at the end of the lines.
+Order inside `.plot`: zones, gridlines, x labels, the layer, ranges, dots, notes (later
+elements are drawn on top).
+
+Line chart, labelled at the end of each line (no legend):
+
+```html
+<div class="plot" style="--h: 340px; --end: 150px">
+<div class="y zero" style="--y: 0">0</div>
+<div class="y" style="--y: 50">250</div>
+<div class="y" style="--y: 100">500</div>
+<span class="x" style="--x: 0">2019</span>
+<span class="x" style="--x: 50">2022</span>
+<span class="x" style="--x: 100">2025</span>
+<img class="layer" src="charts/accounts.svg" alt="">
+<span class="dot purple" style="--x: 100; --y: 90"></span>
+<span class="note purple" style="--x: 100; --y: 90">Enterprise 450</span>
+</div>
+
+<p class="small">Active accounts by plan, thousands · source: …</p>
+```
+
+**The SVG layer** (`charts/accounts.svg`, next to the deck) holds only shapes, in the same
+0–100 space with y pointing down, so a point at `--x: 50; --y: 62` is `50,38`:
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+<polyline points="0,80 16.67,72 33.33,65 50,53 66.67,42 83.33,28 100,10" fill="none"
+  stroke="#6929c4" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+</svg>
+```
+
+Keep `viewBox="0 0 100 100"`, `preserveAspectRatio="none"` and
+`vector-effect="non-scaling-stroke"` on every stroke (the layer is stretched to the plot,
+strokes stay 2px). Areas: a `<polygon>` closed along `y = 100` with `fill-opacity="0.2"`
+under the line. Forecasts: `stroke-dasharray="6 4"`. **No `<text>` in the SVG**: put every
+label in a `.note` or an axis label, so it uses IBM Plex and stays editable in the PPTX.
+Draw circles as `.dot`, not in the SVG (the stretch would make them ellipses). The layer
+becomes one picture in the PPTX.
+
+Scatter (one highlighted point, the others `gray`), dumbbell and slope: see
+`examples/11-custom-charts.md`. A dumbbell puts the category names in `.y` labels with
+`--axis: 160px`, one row per `--y` (10, 30, 50 …), a `range` from the lower to the higher
+value and two `dot lg` at its ends; a slope chart uses `--axis` and `--end` as label gutters,
+two x labels, one line per item in the layer and `.note left` / `.note` at both ends.
+
+### Donut
+
+Parts of a whole, at most five, with the main share in the middle. The ring is an SVG file;
+the text and the legend are HTML.
+
+```html
+<div class="donut" style="--size: 300px"><img src="charts/renewals.svg" alt=""><b>62%</b><small>renewed</small></div>
+```
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 42">
+<circle cx="21" cy="21" r="15.9155" fill="none" stroke="#6929c4" stroke-width="6"
+  stroke-dasharray="61.6 38.4" stroke-dashoffset="25"/>
+<circle cx="21" cy="21" r="15.9155" fill="none" stroke="#1192e8" stroke-width="6"
+  stroke-dasharray="23.6 76.4" stroke-dashoffset="-37"/>
+</svg>
+```
+
+The circumference is 100, so each part is its percentage: `stroke-dasharray="P−0.4 100−P+0.4"`
+(the 0.4 leaves a white gap), `stroke-dashoffset` = 25 − the sum of the parts before it
+(25 starts at twelve o'clock). Colours in the categorical order, matched by a
+`<div class="legend vertical">` with one `<span><i></i>Name · 62%</span>` per part.
+
+### Heatmap
+
+Two categories crossed (day × hour, team × month): a pipe table whose cells hold
+`<span class="heat sN">value</span>`, N from 1 (Blue 10) to 9 (Blue 90). Bucket the values
+into five to seven steps of equal width; text turns white from `s6`.
+
+```markdown
+| | 8–10 | 10–12 |
+|---|---|---|
+| Monday | <span class="heat s7">142</span> | <span class="heat s6">118</span> |
+| Tuesday | <span class="heat s5">96</span> | <span class="heat s4">71</span> |
+```
+
 ### Tag
 
 ```html

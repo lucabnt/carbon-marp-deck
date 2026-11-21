@@ -37,7 +37,7 @@ Write the deck in Markdown, or let your coding agent write it from a brief, and 
 
 - **A Carbon-style Marp theme** ([`themes/carbon.css`](themes/carbon.css)) whose values all come from Carbon tokens: the White, Gray 10, Gray 90 and Gray 100 themes, the Carbon type scale in Plex, the spacing scale and 2x grid gutters, Carbon tag and notification colours, and the Markdown element styles of [`@carbon/element-styles`](https://github.com/carbon-design-system/carbon-element-styles).
 - **Slide layouts**: cover (three themes), contents (also with the current section), section divider, content, statement, quote, closing, backup.
-- **Components**: two and three column grids, cards (Carbon tiles), KPIs, bar charts (also diverging), meters, roadmaps, progress indicators, do / don't boxes, breadcrumbs, tags, notification bands, flow diagrams, process diagrams, data tables, pull quotes.
+- **Components**: two and three column grids, cards (Carbon tiles), KPIs, bar charts (also diverging), custom charts (lines, areas, scatter, dumbbells, slopes, donuts, heatmaps), meters, roadmaps, progress indicators, do / don't boxes, breadcrumbs, tags, notification bands, flow diagrams, process diagrams, data tables, pull quotes.
 - **Plex bundled** (SIL OFL): every PDF renders in the Carbon typeface, installed or not.
 - **1,429 Carbon pictograms** (Apache-2.0) with a keyword search.
 - **An agent skill** ([`SKILL.md`](SKILL.md)): an agent turns a brief into a finished deck, lints it, exports it and checks the previews.
@@ -211,6 +211,9 @@ Set a slide class with `<!-- _class: name -->` at the top of the slide.
 | Bar chart | `.bars` › `.bar` (`--v` 0–100), `.vertical`, `.stacked` / `.grouped` + `.legend`, `.diverging` (`--v` −100–100, `.neg`), colour modifiers, `.gray` | Carbon simple, stacked and grouped bar charts, as native shapes |
 | Meter | `.meter` (`--v`), target `--t` + `<u>`, `.proportional`, status `.success` `.warn` `.error` | Carbon meter and bullet charts |
 | Roadmap | `.roadmap` › `.scale` + `.task` (`--from`, `--to`) | Carbon floating bar chart, as a Gantt timeline |
+| Custom chart | `.plot` › `.y` `.x` gridlines and labels, `.dot` `.range` `.zone` `.note` at `--x` / `--y` 0–100, one text-free SVG `.layer` for lines and areas | Carbon line, area, scatter and other charts, for the chart no component draws |
+| Donut | `.donut` (SVG ring + centre value) + `.legend.vertical` | Carbon donut chart |
+| Heatmap | `<span class="heat s1">` … `s9` in table cells | Carbon heatmap, Blue sequential scale |
 | Tag | `.pill` + `.cyan` `.teal` `.purple` `.magenta` `.green` `.red` `.gray` | Carbon Tag |
 | Band | `.band` + `.warn` `.success` `.error` | Inline notification (low contrast) with its status icon |
 | Flow diagram | `.flow` › `.node` + `.arrow` (colour modifiers) | Outlined boxes, category tints |
@@ -306,6 +309,7 @@ npx --yes @marp-team/marp-cli@4.5.1 --no-stdin my-deck.md --pdf --config-file th
 | [`08-bar-charts.md`](examples/08-bar-charts.md) | bar charts: simple, stacked and grouped, horizontal and vertical | [PDF](examples/pdf/08-bar-charts.pdf) · [PPTX](examples/pptx/08-bar-charts.pptx) |
 | [`09-meters-and-roadmaps.md`](examples/09-meters-and-roadmaps.md) | meters, targets, proportional meter, roadmap | [PDF](examples/pdf/09-meters-and-roadmaps.pdf) · [PPTX](examples/pptx/09-meters-and-roadmaps.pptx) |
 | [`10-progress-and-statements.md`](examples/10-progress-and-statements.md) | contents with the current section, breadcrumb, progress indicator, statement and quote slides, diverging bars, do / don't | [PDF](examples/pdf/10-progress-and-statements.pdf) · [PPTX](examples/pptx/10-progress-and-statements.pptx) |
+| [`11-custom-charts.md`](examples/11-custom-charts.md) | custom charts: line, area with forecast, scatter, dumbbell, slope, donut, heatmap | [PDF](examples/pdf/11-custom-charts.pdf) · [PPTX](examples/pptx/11-custom-charts.pptx) |
 
 Regenerate them with `python tools/build_examples.py` (or `npm run build`).
 

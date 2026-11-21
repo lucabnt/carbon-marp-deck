@@ -25,6 +25,10 @@ Catches the mistakes that break a slide silently, before the PDF / PPTX export:
            (or set on a positive one), largest change (either sign) not 100
   warning  more than one `.current` step in a `.progress` or `.toc-item` in a contents
            slide; a `.progress` step or a `.do` / `.dont` box without its `<b>` title
+  warning  custom charts: a `.plot` element outside 0-100 or without its --x / --y, a
+           `.range` that ends before it starts, an SVG layer without the 0-100 viewBox,
+           preserveAspectRatio="none" or non-scaling strokes, text or circles in a chart
+           SVG, a `.heat` cell without one step class s1-s9
 
 Usage:
     python scripts/lint_deck.py my-deck/my-deck.md
@@ -240,6 +244,7 @@ def check_slide(md: Path, number: int, first_line: int, lines, issues):
 
     # -- progress indicator, contents with current section, do / don't ----------
     check_components(body, add)
+    check_plot(md, body, add)
 
     # -- removed end mark --------------------------------------------------------
     for off, line in enumerate(body):
@@ -423,6 +428,89 @@ def check_components(body, add):
         if block == "progress" and "<b>" not in line:
             add("warning", off, "each `.progress` step needs its label in `<b>`: "
                                 "`<div class=\"done\"><b>Label</b><small>detail</small></div>`")
+
+
+PLOT_RE = re.compile(r'<div\s+class="plot\b')
+PLOT_ITEM_RE = re.compile(r'<(?:div|span|img)\s+class="((?:y|x|dot|range|zone|note|layer)\b[^"]*)"')
+HEAT_RE = re.compile(r'<span\s+class="heat(?:\s+([^"]*))?"')
+DONUT_IMG_RE = re.compile(r'<div\s+class="donut\b[^>]*>\s*<img\b[^>]*src="([^"]+)"')
+
+
+def check_svg_layer(md: Path, ref: str, off, add, layer: bool):
+    """A chart SVG holds shapes only; a .plot layer is drawn in a stretched 0-100 space."""
+    path = md.parent / ref
+    if not ref.lower().endswith(".svg"):
+        if layer:
+            add("warning", off, f"`.layer` should be an SVG drawn in a 0-100 space: {ref}")
+        return
+    if not path.exists():
+        return                                   # reported as a missing image
+    svg = path.read_text(encoding="utf-8", errors="replace")
+    if re.search(r"<text\b", svg):
+        add("warning", off, f"{ref}: text in a chart SVG loses IBM Plex and is not editable "
+                            "in the PPTX; put labels in `.note` / axis labels instead")
+    if not layer:
+        return
+    if not re.search(r'viewBox="0 0 100 100"', svg) or 'preserveAspectRatio="none"' not in svg:
+        add("warning", off, f'{ref}: a `.plot` layer needs viewBox="0 0 100 100" and '
+                            'preserveAspectRatio="none" to line up with --x / --y')
+    strokes = len(re.findall(r'\sstroke="(?!none)', svg))
+    if strokes > len(re.findall(r'non-scaling-stroke', svg)):
+        add("warning", off, f'{ref}: add vector-effect="non-scaling-stroke" to every stroke, '
+                            "or the stretched layer distorts the line width")
+    if re.search(r"<(?:circle|ellipse)\b", svg):
+        add("warning", off, f"{ref}: circles in a stretched layer become ellipses; "
+                            "draw points as `.dot`")
+
+
+def check_plot(md: Path, body, add):
+    """Custom charts: `.plot` positions and SVG layer, `.donut` ring, heatmap steps."""
+    lines = blank_comments(body)
+    in_plot = False
+    for off, raw in enumerate(lines):
+        line = raw.strip()
+        for m in HEAT_RE.finditer(line):
+            steps = [c for c in (m.group(1) or "").split() if re.fullmatch(r"s[1-9]", c)]
+            if len(steps) != 1:
+                add("warning", off, "a `.heat` cell needs one step class, `s1` (Blue 10) to "
+                                    "`s9` (Blue 90)")
+        m = DONUT_IMG_RE.search(line)
+        if m:
+            check_svg_layer(md, m.group(1), off, add, layer=False)
+        if PLOT_RE.match(line):
+            in_plot = True
+            continue
+        if not in_plot:
+            continue
+        if line == "</div>":
+            in_plot = False
+            continue
+        m = PLOT_ITEM_RE.match(line)
+        if not m:
+            continue
+        cls = m.group(1).split()
+        kind = cls[0]
+        if kind == "layer":
+            src = re.search(r'src="([^"]+)"', line)
+            if src:
+                check_svg_layer(md, src.group(1), off, add, layer=True)
+            continue
+        vals = {k: _num(r"--" + k, line) for k in ("x", "x2", "y", "y2")}
+        for k, v in vals.items():
+            if v is not None and not 0 <= v <= 100:
+                add("warning", off, f"`.{kind}` --{k}: {v:g} is outside the plot (0-100); "
+                                    "widen the axis or map the value again")
+        need = {"y": ("y",), "x": ("x",), "dot": ("x", "y"), "note": ("x", "y"),
+                "zone": ("x", "x2")}.get(kind, ())
+        if kind == "range":
+            need = ("x", "y", "y2") if "vertical" in cls else ("x", "x2", "y")
+            a, b = ("y", "y2") if "vertical" in cls else ("x", "x2")
+            if vals[a] is not None and vals[b] is not None and vals[b] <= vals[a]:
+                add("warning", off, f"`.range` needs --{b} greater than --{a}")
+        missing = [k for k in need if vals[k] is None]
+        if missing:
+            add("warning", off, f"`.{kind}` without " + ", ".join(f"--{k}" for k in missing)
+                                + " (0-100 of the plot)")
 
 
 def lint(md: Path):

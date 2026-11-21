@@ -347,6 +347,43 @@ text-secondary over a 1 px border-strong line, periods separated by 1 px border-
 label column 200 px, 16/22 text-primary; rows at least 40 px with a 1 px border-subtle rule
 (as table rows); 16 px bars from `--from` to `--to`.
 
+### Custom charts — `.plot`, `.donut`, `.heat`
+
+For any chart the components above do not draw. The rules that make it look like the rest
+of the deck, after Carbon Charts and its data-visualization guidelines:
+
+- **Choose by the message.** Change over time: line (area for one series whose volume
+  matters). Ranking or comparison: bars. Parts of a whole: stacked bars, or a donut for one
+  whole of at most five parts. Relationship: scatter. Change between two states per
+  category: dumbbell or slope. Two categories crossed: heatmap. Distribution: dot plot (dots
+  on a single row per category) or columns for bins.
+- **Colour.** One series: Blue 60. Several: the categorical palette in its order (Purple 70,
+  Cyan 50, Teal 70, Magenta 70, Red 50), at most five; group the rest as "Other" in Gray 30.
+  Context marks: Gray 30. Highlight one series by greying the others rather than adding
+  colours. Sequential values: the Blue scale, Blue 10 to Blue 90 (`.heat s1`–`s9`);
+  diverging values: Red 50 below zero, the chart colour above.
+- **Axes and grid.** Horizontal gridlines only, 1 px border-subtle-00 (Gray 20); the
+  baseline 1 px border-strong-01. Axis labels 14/16 text-secondary; four to six round
+  ticks. Bars and areas start at zero; lines may start elsewhere if the axis says so.
+- **Marks.** Lines 2 px, round joins; points 8 px, 14 px in scatter plots and dumbbells;
+  areas at 20% opacity under their line; forecasts dashed (6 / 4) on a Gray 10 zone.
+  No 3D, shadows, gradients or rounded bar ends.
+- **Labels.** Label series directly at the end of the line (14/16 SemiBold in the series
+  colour, Cyan 60 and Red 60 for text) instead of a legend when there is room; one or two
+  notes for the points the title is about, on the side no line crosses (`.above.left`
+  on a rising line). Every label is HTML, never text in an SVG: it
+  keeps IBM Plex and stays editable in the PPTX.
+- **Title and source.** The slide title states what the chart shows; a `.small` line under
+  the chart gives the measure, unit, period and source.
+
+`.plot` places HTML elements at `--x` / `--y` (0–100) over a plot area `--h` high (320 px),
+with a 56 px y-label column (`--axis`), a 32 px x-label row and an optional right gutter
+(`--end`). Lines, areas and other shapes come from one SVG layer stretched over the plot
+area (`viewBox="0 0 100 100"`, `preserveAspectRatio="none"`, non-scaling 2 px strokes); in
+the PPTX it is one picture under native dots, rules and text boxes. `.donut`: a 6/42 ring
+(about one seventh of the diameter), 300 px, centre value heading-06 42/50 Light, 0.4% white
+gaps between parts. `.heat`: the cell takes the step colour; text-on-color from Blue 60.
+
 ### Tag — `.pill`
 
 A Carbon tag: tag background and text tokens, fully rounded, 16/24, 4 × 12 px padding.
@@ -476,6 +513,7 @@ Both options are Carbon sizes; only the choice of size per slide is the template
 | Bar chart from boxes (`.bars`) | Carbon Charts, an SVG/JavaScript library | Marp decks allow no scripts or SVG markup, and a chart drawn with boxes stays native shapes and editable text in the PPTX. It follows the simple bar chart: one series, categorical colours, labelled values. |
 | Chart sizes: 16 px meter track, 24 px bars, 16 px labels | Carbon Charts: thinner tracks and 12 px axis labels, values in tooltips | Slides are read from a distance and are not interactive, so values are written on the chart and text uses the body sizes of the deck. |
 | Diverging bars (`.bars.diverging`) | Bar charts with negative values on a shared axis | Same box construction as `.bars`; the values replace the axis, and the zero line is the only rule. |
+| Custom charts (`.plot`, `.donut`, `.heat`) | Carbon Charts line, area, scatter, donut, heatmap and other charts, drawn in SVG by a library | Text and simple marks are HTML so they stay editable and in IBM Plex; only curves are a picture. Labels are written on the chart because slides have no tooltips. |
 | `statement` and `quote` slides, breadcrumb in the header | Display and quotation type tokens; a breadcrumb component for page navigation | Slide layouts built from those tokens. |
 | Current step and do/don't in SemiBold | Progress labels in Regular; do/don't captions under the example | On a slide the current step and the verdict must be found at a glance. |
 | `.gray` bars and tasks (Gray 30) | No muted series colour in the palettes | Lets one bar or task carry the message; done work in a roadmap reads as finished. |

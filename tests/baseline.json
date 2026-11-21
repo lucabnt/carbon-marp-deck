@@ -236,6 +236,27 @@
   ],
   "warnings": []
  },
+ "11-custom-charts": {
+  "shapes": [
+   30,
+   27,
+   30,
+   36,
+   23,
+   14,
+   138
+  ],
+  "notes": [
+   "EXAMPLE 11 — Custom Charts\n\nComponents: .plot (axes, gridlines, dots, ranges, zones, notes, SVG layer),\n\n.donut, heatmap table\n\nThe SVG layers in charts/ hold only lines, areas and rings, drawn in a\n\n0-100 space; every label is HTML.\n\nPattern A: line chart, three series, labelled at the end of each line\n\nLine chart: the SVG layer draws the three polylines; gridlines, labels, end dots and the\ndirect labels are HTML. --end reserves the gutter for the labels.",
+   "Pattern B: area chart with a forecast zone and one annotated point",
+   "Pattern C: scatter plot, one team highlighted, the others in Gray 30",
+   "Pattern D: dumbbell — before (Gray 30) and after (Blue 60) for each category",
+   "Pattern E: slope chart — two years, labels on both sides, one line highlighted\n\nThe plot shows scores 40 to 90 only, so --y = (score - 40) x 2: the lines fill the height.\nA slope chart needs no gridlines; the labels carry the values.",
+   "Pattern F: donut with the main share in the middle and a vertical legend",
+   "Pattern G: heatmap — a table whose cells take the Blue sequential scale"
+  ],
+  "warnings": []
+ },
  "converter-cases": {
   "shapes": [
    3,

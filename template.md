@@ -715,6 +715,175 @@ style: |
   .roadmap .task.magenta span { background: var(--cds-accent-magenta); }
   .roadmap .task.gray    span { background: #c6c6c6; }   /* Gray 30 */
 
+  /* ── COMPONENT: custom chart (.plot) — axes, gridlines and marks ───────────── */
+  /* For the charts the components above do not cover: lines, areas, scatter, */
+  /* dot plots, dumbbells, lollipops, slopes, ranges. Every position is 0-100  */
+  /* of the plot area: --x from the left, --y from the bottom. Axis labels,    */
+  /* gridlines, dots and notes are HTML (native shapes and editable text in    */
+  /* the PPTX); lines and areas come from one text-free SVG layer drawn in the */
+  /* same 0-100 space (viewBox="0 0 100 100" preserveAspectRatio="none").      */
+  /*   <div class="plot" style="--h: 320px">                                    */
+  /*   <div class="y zero" style="--y: 0">0</div>     gridline + y-axis label   */
+  /*   <span class="x" style="--x: 0">2020</span>     x-axis label              */
+  /*   <img class="layer" src="charts/sales.svg" alt="">                        */
+  /*   <span class="dot" style="--x: 50; --y: 62"></span>                       */
+  /*   <span class="note" style="--x: 50; --y: 62">412</span>                   */
+  /*   </div>                                                                   */
+  /* Plot area --h tall (default 320px) after a 56px y-label column (--axis)   */
+  /* and above a 32px x-label row; --end reserves a right gutter for labels at */
+  /* the end of lines. Notes: right of the point; .left, .above, .above.left */
+  /* or .above.right to keep clear of the lines.                               */
+  /* Gridlines 1px border-subtle-00, .zero baseline 1px      */
+  /* border-strong-01, axis labels 14/16 text-secondary, notes 14/16 SemiBold. */
+  /* Marks Blue 60, or the categorical palette in order for several series    */
+  /* (.purple .cyan .teal .magenta .red); .gray (Gray 30) mutes context.       */
+  .plot {
+    position: relative;
+    height: calc(var(--h, 320px) + 32px);
+    margin: 24px 0 16px;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.16px;
+    color: var(--cds-text-secondary);
+  }
+  .plot > * { position: absolute; margin: 0; white-space: nowrap; }
+  .plot .y {
+    left: 0;
+    right: var(--end, 0px);
+    bottom: calc(32px + (100% - 32px) * var(--y, 0) / 100 - 8px);
+    height: 16px;
+    box-sizing: border-box;
+    padding-right: calc(100% - var(--end, 0px) - var(--axis, 56px) + 8px);
+    text-align: right;
+  }
+  .plot .y::after {
+    content: "";
+    position: absolute;
+    left: var(--axis, 56px);
+    right: 0;
+    top: 8px;
+    height: 1px;
+    background: var(--cds-border-subtle-00);
+  }
+  .plot .y.zero::after { background: var(--cds-border-strong-01); }
+  .plot .x {
+    top: calc(100% - 24px);
+    left: calc(var(--axis, 56px) + (100% - var(--axis, 56px) - var(--end, 0px)) * var(--x, 0) / 100 - 60px);
+    width: 120px;
+    text-align: center;
+  }
+  .plot .layer {
+    left: var(--axis, 56px);
+    top: 0;
+    width: calc(100% - var(--axis, 56px) - var(--end, 0px));
+    height: calc(100% - 32px);
+    max-width: none;
+  }
+  .plot .zone {
+    left: calc(var(--axis, 56px) + (100% - var(--axis, 56px) - var(--end, 0px)) * var(--x, 0) / 100);
+    width: calc((100% - var(--axis, 56px) - var(--end, 0px)) * (var(--x2, 100) - var(--x, 0)) / 100);
+    bottom: calc(32px + (100% - 32px) * var(--y, 0) / 100);
+    height: calc((100% - 32px) * (var(--y2, 100) - var(--y, 0)) / 100);
+    background: var(--cds-layer-01);
+  }
+  .plot .dot {
+    --s: 8px;
+    left: calc(var(--axis, 56px) + (100% - var(--axis, 56px) - var(--end, 0px)) * var(--x, 0) / 100 - var(--s) / 2);
+    bottom: calc(32px + (100% - 32px) * var(--y, 0) / 100 - var(--s) / 2);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: var(--cds-accent-blue);
+  }
+  .plot .dot.lg { --s: 14px; }
+  .plot .range {
+    left: calc(var(--axis, 56px) + (100% - var(--axis, 56px) - var(--end, 0px)) * var(--x, 0) / 100);
+    width: calc((100% - var(--axis, 56px) - var(--end, 0px)) * (var(--x2, 0) - var(--x, 0)) / 100);
+    bottom: calc(32px + (100% - 32px) * var(--y, 0) / 100 - var(--t, 2px) / 2);
+    height: var(--t, 2px);
+    background: #c6c6c6;   /* Gray 30 */
+  }
+  .plot .range.vertical {
+    left: calc(var(--axis, 56px) + (100% - var(--axis, 56px) - var(--end, 0px)) * var(--x, 0) / 100 - var(--t, 2px) / 2);
+    width: var(--t, 2px);
+    bottom: calc(32px + (100% - 32px) * var(--y, 0) / 100);
+    height: calc((100% - 32px) * (var(--y2, 0) - var(--y, 0)) / 100);
+  }
+  .plot .note {
+    left: calc(var(--axis, 56px) + (100% - var(--axis, 56px) - var(--end, 0px)) * var(--x, 0) / 100 + 12px);
+    bottom: calc(32px + (100% - 32px) * var(--y, 0) / 100 - 8px);
+    font-weight: 600;
+    color: var(--cds-text-primary);
+  }
+  .plot .note.left {
+    left: auto;
+    right: calc(100% - var(--axis, 56px) - (100% - var(--axis, 56px) - var(--end, 0px)) * var(--x, 0) / 100 + 12px);
+  }
+  .plot .note.above {
+    left: calc(var(--axis, 56px) + (100% - var(--axis, 56px) - var(--end, 0px)) * var(--x, 0) / 100 - 60px);
+    width: 120px;
+    bottom: calc(32px + (100% - 32px) * var(--y, 0) / 100 + 12px);
+    text-align: center;
+  }
+  .plot .note.above.left {
+    left: auto;
+    width: auto;
+    right: calc(100% - var(--axis, 56px) - (100% - var(--axis, 56px) - var(--end, 0px)) * var(--x, 0) / 100 - 4px);
+    text-align: right;
+  }
+  .plot .note.above.right {
+    left: calc(var(--axis, 56px) + (100% - var(--axis, 56px) - var(--end, 0px)) * var(--x, 0) / 100 - 4px);
+    width: auto;
+    text-align: left;
+  }
+  .plot .dot.purple,  .plot .range.purple  { background: var(--cds-accent-purple); }
+  .plot .dot.cyan,    .plot .range.cyan    { background: var(--cds-accent-cyan); }
+  .plot .dot.teal,    .plot .range.teal    { background: var(--cds-accent-teal); }
+  .plot .dot.magenta, .plot .range.magenta { background: var(--cds-accent-magenta); }
+  .plot .dot.red,     .plot .range.red     { background: #fa4d56; }   /* Red 50 */
+  .plot .dot.blue,    .plot .range.blue    { background: var(--cds-accent-blue); }
+  .plot .dot.gray                          { background: #c6c6c6; }   /* Gray 30 */
+  .plot .note.purple  { color: var(--cds-accent-purple); }
+  .plot .note.cyan    { color: #0072c3; }   /* Cyan 60: Cyan 50 text is too light */
+  .plot .note.teal    { color: var(--cds-accent-teal); }
+  .plot .note.magenta { color: var(--cds-accent-magenta); }
+  .plot .note.red     { color: #da1e28; }   /* Red 60 */
+  .plot .note.blue    { color: var(--cds-accent-blue); }
+  .plot .note.gray    { color: var(--cds-text-secondary); font-weight: 400; }
+
+  /* ── COMPONENT: donut (.donut) — Carbon donut chart ────────────────────────── */
+  /* A text-free SVG ring (see the chart spec) with the total in the middle:   */
+  /*   <div class="donut"><img src="charts/share.svg" alt=""><b>62%</b><small>renewed</small></div> */
+  /* 280px square (--size); centre value heading-06 42/50 Light, label 14/18  */
+  /* text-secondary. Pair it with a .legend; at most five parts.               */
+  .donut {
+    position: relative;
+    width: var(--size, 280px);
+    height: var(--size, 280px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 16px 0;
+  }
+  .donut img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; }
+  .donut b {
+    position: relative;
+    font-size: 42px;
+    line-height: 1.19;
+    font-weight: 300;
+    color: var(--cds-text-primary);
+  }
+  .donut small {
+    position: relative;
+    font-size: 14px;
+    line-height: 1.29;
+    letter-spacing: 0.16px;
+    color: var(--cds-text-secondary);
+  }
+  .legend.vertical { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 24px; }
+
   /* ── COMPONENT: tag (.pill) — Carbon Tag ───────────────────────────────────── */
   /* tag-background-* / tag-color-* tokens, fully rounded. Default blue;        */
   /* modifiers .cyan .teal .purple .magenta .green .red .gray.                  */
@@ -957,6 +1126,22 @@ style: |
                        text-align: left; vertical-align: top; }
   table th { background: var(--cds-layer-accent-01); color: var(--cds-text-primary); font-weight: 600; }
   table td { background: var(--cds-layer-01); color: var(--cds-text-secondary); }
+
+  /* Heatmap cells: <span class="heat s1">…</span> … s9 fills the whole cell    */
+  /* with the Carbon Blue sequential scale, Blue 10 (s1) to Blue 90 (s9);      */
+  /* text turns text-on-color from s6. Bucket the values into the steps.        */
+  table td .heat { display: block; margin: -12px -16px; padding: 12px 16px;
+                   color: var(--cds-text-primary); }
+  section.compact table td .heat { margin: -8px -16px; padding: 8px 16px; }
+  table td .heat.s1 { background: #edf5ff; }
+  table td .heat.s2 { background: #d0e2ff; }
+  table td .heat.s3 { background: #a6c8ff; }
+  table td .heat.s4 { background: #78a9ff; }
+  table td .heat.s5 { background: #4589ff; }
+  table td .heat.s6 { background: #0f62fe; color: var(--cds-text-on-color); }
+  table td .heat.s7 { background: #0043ce; color: var(--cds-text-on-color); }
+  table td .heat.s8 { background: #002d9c; color: var(--cds-text-on-color); }
+  table td .heat.s9 { background: #001d6c; color: var(--cds-text-on-color); }
 
   /* ── COMPONENT: pictogram (img.pictogram) ──────────────────────────────────── */
   /* Carbon pictograms (SVG, single colour via CSS filter), trimmed on the left */

@@ -6,6 +6,23 @@ All notable changes to this project. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Custom charts for the chart the message needs when no component draws it: `.plot` places
+  gridlines, axis labels, dots, ranges, zones and notes at `--x` / `--y` (0–100) in HTML,
+  with lines and areas from one text-free SVG layer, so the PPTX keeps native shapes and
+  editable text in IBM Plex. Also a `.donut` (SVG ring with the value in the middle,
+  `.legend.vertical`) and heatmap cells (`.heat s1`–`s9`, Blue sequential scale).
+- Custom-chart rules in the style guide (chart choice, palette, gridlines, marks, direct
+  labels), snippets in `references/components.md`, example `11-custom-charts.md` and lint
+  warnings for positions outside the plot, missing coordinates, SVG layers that will not line
+  up or contain text, and heatmap cells without a step.
+
+### Changed
+
+- `SKILL.md` now picks the chart for the message first and builds it in the deck style when
+  no component draws it, instead of falling back to a table or a supplied image.
+
 ## [1.1.0] — 2026-11-21
 
 ### Added
