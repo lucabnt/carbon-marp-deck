@@ -215,6 +215,27 @@
   ],
   "warnings": []
  },
+ "10-progress-and-statements": {
+  "shapes": [
+   18,
+   44,
+   5,
+   3,
+   4,
+   24,
+   23
+  ],
+  "notes": [
+   "EXAMPLE 10 — Progress and Statements\n\nComponents: .toc-item.current, header breadcrumb, .progress, statement and\n\nquote slide classes, .do / .dont, .bars.diverging\n\nPattern A: contents with the current section — repeat it before each section",
+   "Pattern B: progress indicator; the header directive sets the breadcrumb for\n     this slide and the ones after it",
+   "Pattern C: statement — one number (h1) and the claim (h2)",
+   "Pattern D: statement on Gray 100 — a sentence alone, no number",
+   "Pattern E: quote — the quotation as a blockquote, the attribution after it",
+   "Pattern F: diverging bars — --v from -100 to 100, negatives also carry .neg",
+   "Pattern G: do / don't — pairs in .cols"
+  ],
+  "warnings": []
+ },
  "converter-cases": {
   "shapes": [
    3,

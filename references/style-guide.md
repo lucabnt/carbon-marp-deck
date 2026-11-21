@@ -162,6 +162,10 @@ here). Letter spacing follows the type tokens: 0.32 px at 12 px (label-01) and i
 | KPI number | 54 / 64 | Light 300 | text-primary | heading-07 |
 | Step number | 28 / 36 | Light 300 | text-primary | heading-04 size |
 | Pull quote | 24 / 32 | Regular 400, serif | text-primary | quotation-01 at the lg breakpoint |
+| `quote` slide | 42 / 50 | Regular 400, serif | text-primary | quotation-02 at the lg breakpoint (Regular: the Light serif is not bundled) |
+| `statement` number | 120, leading 1 | Light 300 | text-primary | display-04 size |
+| `statement` claim | 42 / 50 | Light 300 | text-primary | heading-06 |
+| Breadcrumb (`header`) | 12 / 16, +0.32 px | Regular 400 | text-secondary | label-01 |
 | Code block | 14 / 20, +0.32 px | Regular 400, mono | text-primary | code-02 |
 
 **Bold** (`**text**`) is SemiBold 600 in the surrounding colour. *Italic* is reserved for
@@ -210,6 +214,23 @@ text-primary, 20/28, 16 px vertical padding, 1 px border-subtle under each row. 
 column by column, three rows per column by default; for more than six items set
 `style="grid-template-rows: repeat(N, auto)"` on `.toc-grid`.
 
+`.toc-item.current` marks the section that starts when the contents slide is repeated before
+each section, after the selected item of the Carbon side nav: layer-accent-01 fill, 3 px
+Blue 60 left edge, SemiBold title; the other titles turn text-secondary and every item gets
+16 px of left padding.
+
+### `statement` — one number or one sentence (White) · `statement dark` (Gray 100)
+
+Vertically centred. `#` is the number at 120 px Light (display-04 size), `##` the claim at
+42/50 Light (heading-06), at most 75 % wide, `.small` the source 32 px below. A sentence alone
+is written as `##` only. On `statement dark` text, footer and page number use the Gray 100
+theme colours.
+
+### `quote` — a quotation on a whole slide (White)
+
+Vertically centred blockquote in Plex Serif 42/50 (quotation-02), at most 80 % wide; the
+paragraph after it is the attribution, 20/28 text-secondary, 32 px below.
+
 ### `section` — divider (Gray 100) · `backup` — backup opener (Gray 90)
 
 Vertically centred title 54/64 Light and subtitle 28/36 text-secondary. Paragraphs and `.small`
@@ -235,6 +256,13 @@ to 40 px (Carbon data table size lg → md). Use it for dense slides (three colu
 with long titles, tables of 8–10 rows) after shortening the text, before splitting the slide.
 The PPTX export warns when content runs past the bottom margin, which is when `compact` or a
 split is needed.
+
+### Breadcrumb — the `header` directive
+
+`<!-- header: Deck / 02 Section -->` writes a line at the top left (64 px from the left,
+20 px from the top), label-01 12/16 text-secondary, like the footer. Hidden on `lead`, `toc`,
+`section`, `backup` and `end`. Carbon's breadcrumb separates levels with `/`; on a slide the
+levels are plain text, not links.
 
 ### Recommended order
 
@@ -294,6 +322,11 @@ separated by a 1 px divider in the background colour, total after (or above) the
 five segments. `.legend` names them: 12 px squares, 8 px from the name, 24 px between items,
 14/18 text-secondary, above the chart.
 
+`.diverging` puts a 1 px text-primary zero line in the middle of the plot; `--v` runs from
+-100 to 100 and bars grow left or right from the line. Negative bars carry `.neg` and use
+Red 50, the categorical red at the far end of the Carbon red–cyan diverging palette; positive
+bars keep the chart colour. Values (with their sign) sit in a 72 px right-aligned column.
+
 `.grouped` follows the Carbon grouped bar chart: two to four series per category, same
 palette order as the stacked chart. Horizontal: 16 px bars 4 px apart, 14/22 SemiBold value
 after each bar. Vertical: columns up to 48 px wide, value above.
@@ -349,6 +382,20 @@ Contiguous tiles separated by 1 px, each with a 4 px category stroke on top. Num
 (`.step-num`) 28/36 Light, title (`<b>`) 14/18 SemiBold, detail (`<small>`) 14/18
 text-secondary. Variants `.blue` `.cyan` `.teal` `.purple` `.magenta` add the tint;
 `.hero` (Blue 60 fill) highlights one step. Five or six steps at most.
+
+### Progress indicator — `.progress`
+
+After the Carbon progress indicator, horizontal: one step per `<div>`, 8 px apart, each with a
+2 px line on top (Blue 60 up to the current step, border-subtle-01 after it, support-error on
+an `.error` step) and a 20 px status icon 16 px below it: checkmark outline (`.done`), ring
+with a filled dot (`.current`), empty ring (not started), the error icon (`.error`). Label 20/28
+text-primary, SemiBold on the current step; detail (`<small>`) 14/18 text-secondary.
+
+### Do / Don't — `.do`, `.dont`
+
+After the do/don't examples of the Carbon guidelines: layer-01 box, 16 px padding, a 4 px
+top stroke in support-success (`.do`) or support-error (`.dont`), the matching 20 px status
+icon (checkmark filled, error filled) before the SemiBold title, body 16/24.
 
 ### Contents — `.toc-grid`, `.toc-item`
 
@@ -425,9 +472,12 @@ Both options are Carbon sizes; only the choice of size per slide is the template
 | Body text at 20/28 | Body styles at 14 and 16 px | Slides are read from a distance; 20/28 uses the size and leading of heading-03 in Regular weight. |
 | Category stroke on cards and steps (4 px) | Tiles without strokes | Marks the category of a tile at a glance; the colours are the first entries of the Carbon categorical palette, which is designed for telling categories apart. |
 | Category tints on flow nodes and steps | The 10 grade of each hue | Same coding as the strokes, as a fill. |
-| Flow diagrams, process steps, KPIs | No equivalent components (the progress indicator is closest to the steps) | Common slide content; built from tiles, borders and type tokens. |
+| Flow diagrams, process steps, KPIs | No equivalent components (the progress indicator, now `.progress`, is closest to the steps) | Common slide content; built from tiles, borders and type tokens. |
 | Bar chart from boxes (`.bars`) | Carbon Charts, an SVG/JavaScript library | Marp decks allow no scripts or SVG markup, and a chart drawn with boxes stays native shapes and editable text in the PPTX. It follows the simple bar chart: one series, categorical colours, labelled values. |
 | Chart sizes: 16 px meter track, 24 px bars, 16 px labels | Carbon Charts: thinner tracks and 12 px axis labels, values in tooltips | Slides are read from a distance and are not interactive, so values are written on the chart and text uses the body sizes of the deck. |
+| Diverging bars (`.bars.diverging`) | Bar charts with negative values on a shared axis | Same box construction as `.bars`; the values replace the axis, and the zero line is the only rule. |
+| `statement` and `quote` slides, breadcrumb in the header | Display and quotation type tokens; a breadcrumb component for page navigation | Slide layouts built from those tokens. |
+| Current step and do/don't in SemiBold | Progress labels in Regular; do/don't captions under the example | On a slide the current step and the verdict must be found at a glance. |
 | `.gray` bars and tasks (Gray 30) | No muted series colour in the palettes | Lets one bar or task carry the message; done work in a roadmap reads as finished. |
 | `ruled` (8 px Blue 60 left edge) and `bk` (4 px Gray 50 top edge) | No such borders | Optional markers: emphasis for a slide, and appendix slides that must not be mistaken for the main talk. |
 | Default pictogram colour Gray 100, sizes 80 and 120 px | Pictograms in a colour that contrasts with the background, 48 px minimum | Gray 100 keeps colour for meaning; the sizes stay on the 8 px grid. |

@@ -21,6 +21,17 @@ All notable changes to this project. The format follows
   `09-meters-and-roadmaps.md`, and lint warnings for chart values out of range, missing
   bar, track or target elements, charts not scaled to 100, bars with different numbers of
   series, missing legends and roadmap tasks that end before they start.
+- Progress indicator (`.progress`, steps `.done` / `.current` / `.error`) after the Carbon
+  progress indicator, with its status icons.
+- `statement` and `statement dark` slide classes (one number at display size, or one sentence)
+  and a `quote` slide class (quotation-02 in Plex Serif).
+- Do / Don't boxes (`.do`, `.dont`) after the Carbon guideline examples.
+- Contents slide with the current section (`.toc-item.current`) and a breadcrumb from Marp's
+  `header` directive, hidden on the same slides as the footer.
+- Diverging bar chart (`.bars.diverging`, `--v` from -100 to 100, `.neg`).
+- Example `10-progress-and-statements.md`, snippets, style guide and `SKILL.md` guidance, and
+  lint warnings for diverging values and signs, more than one current step or section, and
+  progress steps or do / don't boxes without their title.
 
 ## [1.0.0] — 2026-11-21
 

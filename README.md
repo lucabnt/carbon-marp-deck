@@ -36,8 +36,8 @@ Write the deck in Markdown, or let your coding agent write it from a brief, and 
 ## What you get
 
 - **A Carbon-style Marp theme** ([`themes/carbon.css`](themes/carbon.css)) whose values all come from Carbon tokens: the White, Gray 10, Gray 90 and Gray 100 themes, the Carbon type scale in Plex, the spacing scale and 2x grid gutters, Carbon tag and notification colours, and the Markdown element styles of [`@carbon/element-styles`](https://github.com/carbon-design-system/carbon-element-styles).
-- **Slide layouts**: cover (three themes), contents, section divider, content, closing, backup.
-- **Components**: two and three column grids, cards (Carbon tiles), KPIs, bar charts, meters, roadmaps, tags, notification bands, flow diagrams, process diagrams, data tables, pull quotes.
+- **Slide layouts**: cover (three themes), contents (also with the current section), section divider, content, statement, quote, closing, backup.
+- **Components**: two and three column grids, cards (Carbon tiles), KPIs, bar charts (also diverging), meters, roadmaps, progress indicators, do / don't boxes, breadcrumbs, tags, notification bands, flow diagrams, process diagrams, data tables, pull quotes.
 - **Plex bundled** (SIL OFL): every PDF renders in the Carbon typeface, installed or not.
 - **1,429 Carbon pictograms** (Apache-2.0) with a keyword search.
 - **An agent skill** ([`SKILL.md`](SKILL.md)): an agent turns a brief into a finished deck, lints it, exports it and checks the previews.
@@ -200,19 +200,25 @@ Set a slide class with `<!-- _class: name -->` at the top of the slide.
 | `backup` | Gray 90 | Opens the backup section, after `end` |
 | `bk` | White | Backup content slide, 4 px Gray 50 top edge |
 | `compact` | (any) | Adds to another class: on a dense slide, `h3` 20 px and table rows 40 px (Carbon sizes md) |
+| `statement` | White (`statement dark`: Gray 100) | One big number (120 px Light) or one sentence, with its source |
+| `quote` | White | One quotation in Plex Serif 42 px, with its attribution |
 
 | Component | Markup | Based on |
 |---|---|---|
 | Two / three columns | `.cols` / `.cols3` | 2x grid, 32 / 16 px gutters |
 | Card | `.card` + `.cyan` `.teal` `.purple` `.magenta`, `.sm` | Tile with a category stroke |
 | KPI | `.kpi` + `.kpi-label` | 54 px Light number, secondary label |
-| Bar chart | `.bars` › `.bar` (`--v` 0–100), `.vertical`, `.stacked` / `.grouped` + `.legend`, colour modifiers, `.gray` | Carbon simple, stacked and grouped bar charts, as native shapes |
+| Bar chart | `.bars` › `.bar` (`--v` 0–100), `.vertical`, `.stacked` / `.grouped` + `.legend`, `.diverging` (`--v` −100–100, `.neg`), colour modifiers, `.gray` | Carbon simple, stacked and grouped bar charts, as native shapes |
 | Meter | `.meter` (`--v`), target `--t` + `<u>`, `.proportional`, status `.success` `.warn` `.error` | Carbon meter and bullet charts |
 | Roadmap | `.roadmap` › `.scale` + `.task` (`--from`, `--to`) | Carbon floating bar chart, as a Gantt timeline |
 | Tag | `.pill` + `.cyan` `.teal` `.purple` `.magenta` `.green` `.red` `.gray` | Carbon Tag |
 | Band | `.band` + `.warn` `.success` `.error` | Inline notification (low contrast) with its status icon |
 | Flow diagram | `.flow` › `.node` + `.arrow` (colour modifiers) | Outlined boxes, category tints |
 | Process | `.process` › `.step` | Numbered tiles with a category stroke |
+| Progress indicator | `.progress` › `div` + `.done` `.current` `.error` | Carbon progress indicator |
+| Do / Don't | `.do`, `.dont` | Do and don't examples of the Carbon guidelines |
+| Current section | `.toc-item.current` on a repeated contents slide | Carbon side nav, selected item |
+| Breadcrumb | `<!-- header: Deck / 02 Section -->` | Carbon breadcrumb, as plain text |
 | Contents | `.toc-grid` › `.toc-item` | Structured list |
 | Author block | `.lead-author` | Cover and closing slides |
 | Footnote | `.small` | Helper text |
@@ -299,6 +305,7 @@ npx --yes @marp-team/marp-cli@4.5.1 --no-stdin my-deck.md --pdf --config-file th
 | [`07-process-diagrams.md`](examples/07-process-diagrams.md) | process steps, pictograms | [PDF](examples/pdf/07-process-diagrams.pdf) · [PPTX](examples/pptx/07-process-diagrams.pptx) |
 | [`08-bar-charts.md`](examples/08-bar-charts.md) | bar charts: simple, stacked and grouped, horizontal and vertical | [PDF](examples/pdf/08-bar-charts.pdf) · [PPTX](examples/pptx/08-bar-charts.pptx) |
 | [`09-meters-and-roadmaps.md`](examples/09-meters-and-roadmaps.md) | meters, targets, proportional meter, roadmap | [PDF](examples/pdf/09-meters-and-roadmaps.pdf) · [PPTX](examples/pptx/09-meters-and-roadmaps.pptx) |
+| [`10-progress-and-statements.md`](examples/10-progress-and-statements.md) | contents with the current section, breadcrumb, progress indicator, statement and quote slides, diverging bars, do / don't | [PDF](examples/pdf/10-progress-and-statements.pdf) · [PPTX](examples/pptx/10-progress-and-statements.pptx) |
 
 Regenerate them with `python tools/build_examples.py` (or `npm run build`).
 

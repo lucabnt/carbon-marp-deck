@@ -89,6 +89,9 @@ Edit `SLUG/SLUG.md` below the front matter. Read only what you need:
 **Slide order:** `lead` cover → `toc` contents → content slides, with `section` dividers
 between major topics → `end` closing → optional `backup` opener and `bk` slides.
 Add `<!-- _paginate: false -->` to `lead`, `toc`, `section`, `end` and `backup` slides.
+In a deck with four or more sections you may repeat the `toc` slide before each section, with
+the starting one marked `current`, instead of `section` dividers; in decks of about 20 slides
+or more, set a breadcrumb with `<!-- header: Deck / 02 Section -->` on each section's first slide.
 Replace every starter placeholder (`Subtitle`, `First topic`, `Replace this with a takeaway title`…).
 
 **Content rules**
@@ -112,11 +115,17 @@ Replace every starter placeholder (`Subtitle`, `First topic`, `Replace this with
 - The closing slide is text: `# Thank you` (or a closing line in the deck's language), an
   optional `##` subtitle and the `.lead-author` contact block. No logos or marks.
 - Do not invent facts, figures or sources; mark missing data as a placeholder for the user.
+- **Emphasis slides:** `statement` (or `statement dark`) for the one number or sentence the
+  audience must remember, with its source in `.small`; `quote` for a real quotation with its
+  attribution (never invent or polish a quote). One or two per deck at most.
+- **Status and guidance:** `.progress` for how far a project has come (`done`, one `current`,
+  not started, `error` when blocked); `.do` / `.dont` pairs in `.cols` for guidelines.
 - **Charts:** for a few numbers use `.kpi`; to compare up to about 8 values of one series use
   the bar chart `.bars` (`.bars vertical` for a time series); for parts of a whole per
   category `.bars stacked`, for two to four series per category `.bars grouped`, both with
-  a `.legend`. Compute each `--v` as value ÷ largest × 100, rounded (stacked: segment ÷
-  largest bar total × 100), so the largest bar is 100. One measure against its scale or a
+  a `.legend`; for gains and losses (change vs last year, variance to plan) `.bars diverging`
+with `--v` from -100 to 100 and `neg` on the negative bars. Compute each `--v` as value ÷ largest × 100, rounded (stacked: segment ÷
+  largest bar total × 100), so the largest bar is 100 (diverging: the largest change of either sign is ±100). One measure against its scale or a
   target: `.meter` (`--t` + `<u></u>` for the target, `.proportional` for parts of a
   capacity). Plans and timelines: `.roadmap` with `.task` bars from `--from` to `--to`
   (0–100 of the timeline). Add a `.small` line with what is measured and the source. Exact
@@ -143,7 +152,9 @@ as a warning. The documented patterns remain the safest and the most editable:
    (`#`, `##`, `###`), paragraphs, `-` lists, `1.` lists, pipe tables, `>` quotes, fenced code,
    `**bold**`, `*italic*`, `` `code` ``, links, and the components `.cols`/`.cols3`, `.card`,
    `.kpi`/`.kpi-label`, `.bars`/`.bar`/`.legend`, `.meter`, `.roadmap`/`.scale`/`.task`, `.pill`, `.band`, `.small`, `.flow`/`.node`/`.arrow`, `.process`/`.step`,
-   `img.pictogram`, `.toc-grid`, `.lead-author`, and the slide class `compact`.
+   `.progress`, `.do`/`.dont`, `img.pictogram`, `.toc-grid` (with `.toc-item.current`), `.lead-author`,
+   the `header` directive as a breadcrumb, and the slide classes `compact`, `statement`
+   (`statement dark`) and `quote`.
 2. **One component per line**, tags in the documented order:
    `<div class="node cyan"><b>Label</b><small>detail</small></div>`,
    `<div class="step teal"><span class="step-num">01</span><b>Title</b><small>detail</small></div>`,

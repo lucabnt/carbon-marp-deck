@@ -21,6 +21,10 @@ Catches the mistakes that break a slide silently, before the PDF / PPTX export:
   warning  `.meter` without `--v` 0-100 or its track, a target (`--t`) without
            `<u></u>` or the reverse, proportional parts over 100 or without a legend
   warning  roadmap `.task` without `--from` < `--to` (0-100) or its `<span></span>`
+  warning  diverging chart: `--v` outside -100..100, `.neg` missing on a negative bar
+           (or set on a positive one), largest change (either sign) not 100
+  warning  more than one `.current` step in a `.progress` or `.toc-item` in a contents
+           slide; a `.progress` step or a `.do` / `.dont` box without its `<b>` title
 
 Usage:
     python scripts/lint_deck.py my-deck/my-deck.md
@@ -234,6 +238,9 @@ def check_slide(md: Path, number: int, first_line: int, lines, issues):
     # -- charts: bars, meters, roadmaps -----------------------------------------
     check_charts(body, add)
 
+    # -- progress indicator, contents with current section, do / don't ----------
+    check_components(body, add)
+
     # -- removed end mark --------------------------------------------------------
     for off, line in enumerate(body):
         if "end-mark" in line:
@@ -242,7 +249,8 @@ def check_slide(md: Path, number: int, first_line: int, lines, issues):
             break
 
     # -- pictogram colour vs background ----------------------------------------
-    dark = bool(classes & DARK) or {"lead", "dark"} <= classes
+    dark = (bool(classes & DARK) or {"lead", "dark"} <= classes
+            or {"statement", "dark"} <= classes)
     for off, line in enumerate(body):
         for tag in IMG_TAG_RE.findall(line):
             cm = re.search(r'class="([^"]*)"', tag)
@@ -319,16 +327,31 @@ def check_charts(body, add):
         # bar charts
         if BARS_RE.match(line):
             cls = re.search(r'class="([^"]*)"', line).group(1).split()
-            kind = "stacked" if "stacked" in cls else "grouped" if "grouped" in cls else ""
+            kind = ("stacked" if "stacked" in cls else "grouped" if "grouped" in cls
+                    else "diverging" if "diverging" in cls else "")
             chart, totals, segments = off, [], set()
-            if kind and not has_legend:
+            if kind in ("stacked", "grouped") and not has_legend:
                 add("warning", off, f"a {kind} chart needs a `.legend` on the slide "
                                     "(one `<span><i></i>Name</span>` per series)")
             continue
         if chart is None:
             continue
         if BAR_RE.match(line):
-            if kind:
+            if kind == "diverging":
+                v = _num("--v", line)
+                neg = "neg" in re.search(r'class="([^"]*)"', line).group(1).split()
+                if v is None or not -100 <= v <= 100:
+                    add("warning", off, "each diverging `.bar` needs `style=\"--v: N\"` with N "
+                                        "from -100 to 100 (change / largest change x 100)")
+                else:
+                    totals.append(abs(v))
+                    if neg != (v < 0):
+                        add("warning", off, "add `neg` to the class of a bar with a negative `--v` "
+                                            "(and only to those): `<div class=\"bar neg\" ...>`")
+                if "<span></span>" not in line.replace(" ", ""):
+                    add("warning", off, "`.bar` needs an empty `<span></span>` between label "
+                                        "and value (it draws the bar)")
+            elif kind:
                 spans = re.findall(r"<span\b[^>]*>", line)
                 parts = [_num("--v", s) for s in spans]
                 if not spans or None in parts:
@@ -355,12 +378,51 @@ def check_charts(body, add):
         elif line.startswith("</div>"):
             top = max(totals) if totals else None
             if top is not None and not (99 <= top <= 101 if kind == "stacked" else top == 100):
+                what = "change (either sign)" if kind == "diverging" else "value"
                 add("warning", chart, f"the largest bar is {top:g}; "
-                                      "scale the chart so the largest value is 100")
+                                      f"scale the chart so the largest {what} is 100")
             if len(segments) > 1:
                 add("warning", chart, f"every bar of a {kind} chart needs the same number of "
                                       "spans (use `--v: 0` for an empty one)")
             chart = None
+
+
+PROGRESS_RE = re.compile(r'<div\s+class="progress\b')
+DODONT_RE = re.compile(r'<div\s+class="(?:do|dont)"')
+TOC_RE = re.compile(r'<div\s+class="toc-grid\b')
+
+
+def check_components(body, add):
+    """Progress indicators, contents with a current section, do / don't boxes."""
+    lines = blank_comments(body)
+    block, start, current = None, 0, 0
+    for off, raw in enumerate(lines):
+        line = raw.strip()
+        if PROGRESS_RE.match(line) or TOC_RE.match(line):
+            block, start, current = "progress" if PROGRESS_RE.match(line) else "toc", off, 0
+            continue
+        if DODONT_RE.match(line):
+            nxt = next((ln.strip() for ln in lines[off + 1:] if ln.strip()), "")
+            if not re.match(r'<div\s+class="(?:do|dont)">\s*<b>', line) and not nxt.startswith("<b>"):
+                add("warning", off, "start a `.do` / `.dont` box with its title in `<b>` "
+                                    "(`<b>Do</b>` or `<b>Don't</b>`); the icon sits next to it")
+            continue
+        if block is None:
+            continue
+        if line.startswith("</div>") and not line.startswith("</div></div>"):
+            if current > 1:
+                what = "step of a `.progress`" if block == "progress" else "`.toc-item`"
+                add("warning", start, f"mark only one {what} as `current`")
+            block = None
+            continue
+        m = re.match(r'<div(?:\s+class="([^"]*)")?\s*>', line)
+        if not m:
+            continue
+        cls = (m.group(1) or "").split()
+        current += "current" in cls
+        if block == "progress" and "<b>" not in line:
+            add("warning", off, "each `.progress` step needs its label in `<b>`: "
+                                "`<div class=\"done\"><b>Label</b><small>detail</small></div>`")
 
 
 def lint(md: Path):

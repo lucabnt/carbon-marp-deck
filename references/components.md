@@ -31,10 +31,13 @@ Image paths below are relative to a deck created with `scripts/new_deck.py`
 <!-- _class: backup -->      backup opener, Gray 90
 <!-- _class: bk -->          backup content slide
 <!-- _class: compact -->     space-saving sizes on a dense slide (combines: bk compact)
+<!-- _class: statement -->   one big number or one sentence, White
+<!-- _class: statement dark --> the same on Gray 100
+<!-- _class: quote -->       one quotation on the whole slide
 ```
 
 Add `<!-- _paginate: false -->` to `lead`, `toc`, `section`, `end` and `backup`.
-The footer is hidden on those slides automatically.
+The footer and the header (breadcrumb) are hidden on those slides automatically.
 
 ### Cover
 
@@ -70,6 +73,29 @@ Role
 Items fill column by column, three rows per column (6 items = 3 + 3). For 7–8 items:
 `<div class="toc-grid" style="grid-template-rows: repeat(4, auto)">` (rows = items ÷ 2,
 rounded up). The PDF and the PPTX use the same value.
+
+### Contents with the current section
+
+In a deck with four or more sections, repeat the contents slide before each section instead
+of a section divider and add `current` to the section that starts. It gets a grey fill, a
+Blue 60 left edge and SemiBold text; the other items turn grey. One `current` per slide.
+
+```html
+<div class="toc-item current"><span class="toc-num">02</span><span class="toc-title">Results so far</span></div>
+```
+
+### Breadcrumb (header)
+
+Marp's `header` directive puts a line at the top left of every slide after it, in the 12 px
+footer style. Set it on the first slide of each section, with the levels separated by ` / `:
+
+```markdown
+<!-- header: Migration update / 02 Results so far -->
+```
+
+It stays until the next `header` directive (`<!-- header: "" -->` clears it) and is hidden
+on `lead`, `toc`, `section`, `backup` and `end`. Use it in long decks only (about 20 slides
+or more), and keep it short: it must not reach the title.
 
 ### Section divider
 
@@ -130,6 +156,36 @@ Role
 On a `compact` slide `h3` is 20 px instead of 28 px and table rows are 40 px instead of 48 px
 (both Carbon sizes). Use it when a slide is still too full after shortening the text; if the
 export still reports content past the bottom margin, split the slide.
+
+### Statement: one number or one sentence
+
+```markdown
+<!-- _class: statement -->
+
+# 3.2×
+
+## faster from merge to production since the move to the new pipeline
+
+<p class="small">Median lead time, April – September 2025 · source: CI data</p>
+```
+
+`#` is the number (120 px Light), `##` the claim (42 px Light, three lines at most), `.small`
+the source. For a sentence alone, write only the `##`. `statement dark` puts it on Gray 100.
+At most one or two per deck: the slide works because it is rare.
+
+### Quote
+
+```markdown
+<!-- _class: quote -->
+
+> “The new close process saved us two days at every month end.”
+
+— Head of finance, pilot customer
+```
+
+The quotation in Plex Serif 42 px, the attribution under it in grey. Write the typographic
+quotes (“ ”) yourself, keep the quotation under about 25 words, and quote only what the
+person really said: mark a paraphrase as such in the attribution.
 
 ---
 
@@ -280,6 +336,24 @@ the same order in every bar; same palette as the stacked chart.
 Vertical columns per period: `<div class="bars vertical grouped">`, up to about 5 periods
 with 3 series.
 
+### Diverging bar chart
+
+Gains and losses around a zero line in the middle (change vs last year, variance to plan).
+`--v` goes from -100 to 100: the **largest change, of either sign, is 100 or -100**, the others
+are change / largest change × 100. Negative bars also take `neg` (Red 50). The values sit in
+a column on the right.
+
+```html
+<div class="bars diverging">
+<div class="bar" style="--v: 100"><b>Europe</b><span></span><small>+14%</small></div>
+<div class="bar" style="--v: 57"><b>Asia Pacific</b><span></span><small>+8%</small></div>
+<div class="bar neg" style="--v: -50"><b>Americas</b><span></span><small>−7%</small></div>
+</div>
+```
+
+Sort the bars from the largest gain to the largest loss. Write the sign in every value
+(+14%, −7%). Horizontal only.
+
 ### Meter and target (bullet)
 
 One measure against its full scale: title, value text, and a track filled to `--v` (0–100).
@@ -372,6 +446,40 @@ Arrows: `▸` forward · `⇄` both ways. Colour: *(none)* grey · `blue` · `cy
 
 Steps: `blue` · `cyan` · `teal` · `purple` · `magenta` — a different one for each step.
 `hero` (filled Blue 60) highlights one step. Five or six steps at most.
+
+### Progress indicator
+
+Where a project stands: the phases in order, each with its state. Use it instead of
+`.process` when the point is *how far along* the work is, not how it is done.
+
+```html
+<div class="progress">
+  <div class="done"><b>Discovery</b><small>January – February</small></div>
+  <div class="done"><b>Design</b><small>March</small></div>
+  <div class="current"><b>Build</b><small>Sprint 4 of 6</small></div>
+  <div><b>Pilot</b><small>Two teams, July</small></div>
+</div>
+```
+
+States: `done` (checkmark) · `current` (filled dot, SemiBold label; one per indicator) ·
+no class = not started (empty circle) · `error` (red, blocked). The line on top is Blue 60
+up to the current step. Three to six steps; the `<small>` detail is optional.
+
+### Do / Don't
+
+Guidelines, standards and onboarding: a good and a bad example side by side.
+
+```html
+<div class="cols">
+<div class="do"><b>Do</b>Report one problem per ticket, with the steps to reproduce it.</div>
+<div class="dont"><b>Don't</b>Write “nothing works” without the service name or a log.</div>
+</div>
+```
+
+Start each box with its title in `<b>`; the green or red icon is added by the theme. Up to
+two pairs per slide (a second `.cols` with `style="margin-top: 32px"`). A box can hold an
+image or a code block instead of text: put an empty line after the line with the `<b>`
+title and before `</div>`, as for any Markdown inside a `<div>`.
 
 ### Footnote
 

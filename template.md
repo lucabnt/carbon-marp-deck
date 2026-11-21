@@ -191,6 +191,18 @@ style: |
     color: var(--cds-text-secondary);
   }
 
+  /* ── Header as a breadcrumb (Marp `header` directive) ──────────────────────── */
+  /* <!-- header: Contents / 03 Architecture --> on a section divider applies to */
+  /* the slides after it. label-01 12/16, text-secondary, top left; hidden on   */
+  /* the same slides as the footer. Separate levels with " / " as Carbon does.  */
+  header {
+    left: 64px;
+    top: 20px;
+    font-size: 12px;
+    letter-spacing: 0.32px;
+    color: var(--cds-text-secondary);
+  }
+
   /* ── Horizontal rule (element-styles: horizontal-rule, kind subtle) ────────── */
   hr { border: none; height: 1px; padding: 0; background: var(--cds-border-subtle-00); margin: 24px 0; }
 
@@ -318,9 +330,57 @@ style: |
   .toc-item .toc-num   { min-width: 32px; color: var(--cds-text-secondary); }
   .toc-item .toc-title { color: var(--cds-text-primary); }
 
+  /* Current section (.toc-item.current): repeat the contents slide before each  */
+  /* section and mark the one that starts. After the Carbon side-nav selected   */
+  /* item: layer-accent-01 fill, 3px Blue 60 left edge, SemiBold; the other     */
+  /* items turn text-secondary and every item gets 16px of left padding.        */
+  .toc-grid:has(.current) .toc-item { padding-left: 16px; }
+  .toc-grid:has(.current) .toc-title { color: var(--cds-text-secondary); }
+  .toc-grid .toc-item.current {
+    background: var(--cds-layer-accent-01);
+    border-left: 3px solid var(--cds-background-brand);
+    padding-left: 13px;
+  }
+  .toc-grid .toc-item.current .toc-title { color: var(--cds-text-primary); font-weight: 600; }
+
   /* ── Footer hidden on cover, contents, divider, backup opener and end ──────── */
   section.lead footer, section.toc footer, section.section footer,
-  section.backup footer, section.end footer { display: none; }
+  section.backup footer, section.end footer,
+  section.lead header, section.toc header, section.section header,
+  section.backup header, section.end header { display: none; }
+
+  /* ── SLIDE CLASS: statement (one number or one sentence) ───────────────────── */
+  /* <!-- _class: statement --> White · <!-- _class: statement dark --> Gray 100 */
+  /* # 3.2x   → display-04 size 120px Light, tight leading (the number)                         */
+  /* ## line  → heading-06 42/50 Light, 75% wide (the claim; alone = statement) */
+  /* <p class="small"> → the source, 32px below. Centred vertically.            */
+  section.statement {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  section.statement h1 { font-size: 120px; font-weight: 300; line-height: 1; margin: 0 0 16px; }
+  section.statement h2 { font-size: 42px; font-weight: 300; line-height: 1.19; max-width: 75%; margin: 0; }
+  section.statement .small { margin-top: 32px; }
+  section.statement.dark { background: var(--cds-g100-background); color: var(--cds-dark-text-primary); }
+  section.statement.dark h1, section.statement.dark h2, section.statement.dark strong {
+    color: var(--cds-dark-text-primary);
+  }
+  section.statement.dark p, section.statement.dark .small,
+  section.statement.dark footer, section.statement.dark header,
+  section.statement.dark::after { color: var(--cds-dark-text-secondary); }
+
+  /* ── SLIDE CLASS: quote (one quotation on a whole slide) ───────────────────── */
+  /* <!-- _class: quote -->  > “Quotation.”  then the attribution as a paragraph. */
+  /* quotation-02 at the lg breakpoint: Plex Serif 42/50, 80% wide; attribution */
+  /* body 20/28 text-secondary, 32px below. Centred vertically, White theme.    */
+  section.quote {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  section.quote blockquote { font-size: 42px; line-height: 1.19; max-width: 80%; margin: 0; }
+  section.quote > p { margin: 32px 0 0; color: var(--cds-text-secondary); }
 
   /* ══ Layout: Carbon 2x grid gutters ════════════════════════════════════════ */
   /* .cols   two columns, 32px gutter (wide gutter mode)                        */
@@ -517,6 +577,41 @@ style: |
   .bars.grouped .bar span:nth-of-type(2) { background: var(--cds-accent-cyan); }
   .bars.grouped .bar span:nth-of-type(3) { background: var(--cds-accent-teal); }
   .bars.grouped .bar span:nth-of-type(4) { background: var(--cds-accent-magenta); }
+
+  /* ── COMPONENT: diverging bar chart (.bars.diverging) ──────────────────────── */
+  /* Gains and losses around a zero line in the middle of the plot:             */
+  /*   <div class="bar" style="--v: 70"><b>Europe</b><span></span><small>+14%</small></div> */
+  /*   <div class="bar neg" style="--v: -35"><b>Americas</b><span></span><small>-7%</small></div> */
+  /* --v from -100 to 100 (the largest change, either sign, is 100); negative   */
+  /* bars also carry .neg, which colours them Red 50 (the categorical red, the  */
+  /* far end of the Carbon red-cyan diverging palette); positive bars keep the  */
+  /* chart colour. Values sit in a right-aligned 72px column; the zero line is  */
+  /* 1px text-primary.                                                          */
+  .bars.diverging { gap: 0; }
+  .bars.diverging .bar {
+    position: relative;
+    grid-template-columns: var(--label, 160px) 1fr 72px;
+    padding: 6px 0;
+  }
+  .bars.diverging .bar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--label, 160px) + 16px + (100% - var(--label, 160px) - 104px) / 2);
+    width: 1px;
+    background: var(--cds-text-primary);
+  }
+  .bars.diverging .bar span {
+    width: calc(max(var(--v, 0), -1 * var(--v, 0)) * 0.5%);
+    margin-left: calc(50% + min(var(--v, 0), 0) * 0.5%);
+  }
+  .bars.diverging .bar small {
+    grid-column: 3;
+    justify-self: end;
+    margin-left: 0;
+  }
+  .bars.diverging .bar.neg span { background: #fa4d56; }   /* Red 50 */
 
   /* ── COMPONENT: meter (.meter) — Carbon meter chart ────────────────────────── */
   /* Title (heading-compact-02 16/22 SemiBold) and value (16/22 text-secondary) */
@@ -773,6 +868,79 @@ style: |
   .step.magenta { border-top-color: var(--cds-accent-magenta); background: var(--cds-tint-magenta); }
   .step.hero    { border-top-color: var(--cds-background-brand); background: var(--cds-background-brand); }
   .step.hero .step-num, .step.hero b, .step.hero small { color: var(--cds-text-on-color); }
+
+  /* ── COMPONENT: progress indicator (.progress) — Carbon progress indicator ─── */
+  /* One <div> per step: <div class="done"><b>Label</b><small>detail</small></div> */
+  /* States: .done (checkmark outline), .current (filled dot), no class =       */
+  /* not started (empty circle), .error (blocked: red line, error icon). 20px   */
+  /* status icon; 2px line on top: Blue 60 up to the current step,              */
+  /* border-subtle-01 after it. Label 20/28 (SemiBold on the current step),     */
+  /* detail body-compact-01 14/18 text-secondary. Four to six steps.            */
+  .progress {
+    display: flex;
+    gap: 8px;
+    margin: 24px 0 32px;
+  }
+  .progress > div {
+    flex: 1;
+    position: relative;
+    border-top: 2px solid var(--cds-border-subtle-01);
+    padding: 12px 8px 0 28px;
+    font-size: 14px;
+    line-height: 1.29;
+    letter-spacing: 0.16px;
+    color: var(--cds-text-secondary);
+  }
+  .progress > div::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 16px;
+    width: 20px;
+    height: 20px;
+    background: url("data:image/svg+xml,%3Csvg fill=%22%230f62fe%22 xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath d=%22M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z%22/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  .progress b       { display: block; font-size: 20px; line-height: 1.4; font-weight: 400;
+                      letter-spacing: 0; color: var(--cds-text-primary); margin-bottom: 4px; }
+  .progress small   { font-size: 14px; }
+  .progress .done, .progress .current { border-top-color: var(--cds-background-brand); }
+  .progress .error  { border-top-color: var(--cds-support-error); }
+  .progress .current b { font-weight: 600; }
+  .progress .done::before    { background-image: url("data:image/svg+xml,%3Csvg fill=%22%230f62fe%22 xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath d=%22M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z%22/%3E%3Cpath d=%22M14 21.414 9 16.413 10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z%22/%3E%3C/svg%3E"); }
+  .progress .current::before { background-image: url("data:image/svg+xml,%3Csvg fill=%22%230f62fe%22 xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath d=%22M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z%22/%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%227%22/%3E%3C/svg%3E"); }
+  .progress .error::before   { background-image: url("data:image/svg+xml,%3Csvg fill=%22%23da1e28%22 xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath fill=%22%23ffffff%22 d=%22M14.9 7.2H17.1V24.799H14.9z%22 data-icon-path=%22inner-path%22 transform=%22rotate%28-45 16 16%29%22/%3E%3Cpath d=%22M16,2A13.914,13.914,0,0,0,2,16,13.914,13.914,0,0,0,16,30,13.914,13.914,0,0,0,30,16,13.914,13.914,0,0,0,16,2Zm5.4449,21L9,10.5557,10.5557,9,23,21.4448Z%22/%3E%3C/svg%3E"); }
+
+  /* ── COMPONENT: do / don't (.do / .dont) — Carbon guideline examples ───────── */
+  /* A layer-01 box with a 4px support-success (.do) or support-error (.dont)   */
+  /* stroke on top and the matching 20px status icon before the title <b>.      */
+  /* Text body-02 16/24. Pair them in .cols (or several pairs in .cols).        */
+  .do, .dont {
+    position: relative;
+    background: var(--cds-layer-01);
+    border-top: 4px solid var(--cds-support-success);
+    padding: 16px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--cds-text-primary);
+  }
+  .dont { border-top-color: var(--cds-support-error); }
+  .do::before, .dont::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    top: 18px;
+    width: 20px;
+    height: 20px;
+    background: url("data:image/svg+xml,%3Csvg fill=%22%2324a148%22 xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath d=%22M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z%22/%3E%3Cpath fill=%22%23ffffff%22 d=%22M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z%22 data-icon-path=%22inner-path%22/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  .dont::before { background-image: url("data:image/svg+xml,%3Csvg fill=%22%23da1e28%22 xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath fill=%22%23ffffff%22 d=%22M14.9 7.2H17.1V24.799H14.9z%22 data-icon-path=%22inner-path%22 transform=%22rotate%28-45 16 16%29%22/%3E%3Cpath d=%22M16,2A13.914,13.914,0,0,0,2,16,13.914,13.914,0,0,0,16,30,13.914,13.914,0,0,0,30,16,13.914,13.914,0,0,0,16,2Zm5.4449,21L9,10.5557,10.5557,9,23,21.4448Z%22/%3E%3C/svg%3E"); }
+  .do > b:first-child, .dont > b:first-child {
+    display: block;
+    padding-left: 28px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .do img, .dont img { max-width: 100%; }
 
   /* ── Tables (element-styles: table, kind data-table) ───────────────────────── */
   /* Full width; header layer-accent-01, heading-compact-02 16/22 SemiBold      */
