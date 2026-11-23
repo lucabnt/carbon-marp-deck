@@ -458,6 +458,12 @@ label in a `.note` or an axis label, so it uses IBM Plex and stays editable in t
 Draw circles as `.dot`, not in the SVG (the stretch would make them ellipses). The layer
 becomes one picture in the PPTX.
 
+An SVG loaded as an image cannot read the theme's CSS variables, so its colours are hex
+values: Blue 60 `#0f62fe`, Purple 70 `#6929c4`, Cyan 50 `#1192e8`, Teal 70 `#005d5d`,
+Magenta 70 `#9f1853`, Red 50 `#fa4d56`, Gray 30 `#c6c6c6` (the same values as the
+`--cds-accent-*` tokens). A theme that changes the palette must change them in the SVG files
+as well (`grep -rn '#6929c4' charts/`).
+
 Scatter (one highlighted point, the others `gray`), dumbbell and slope: see
 `examples/11-custom-charts.md`. A dumbbell puts the category names in `.y` labels with
 `--axis: 160px`, one row per `--y` (10, 30, 50 …), a `range` from the lower to the higher

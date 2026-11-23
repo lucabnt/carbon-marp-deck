@@ -31,6 +31,9 @@ SVG_DIR = LIB / "svg"
 SVG_PACK = LIB / "svg.json"
 # Only deck-local references; "../assets/..." (examples) points at the library itself.
 REF = re.compile(r"""(?<![./\w])assets/pictograms/svg/([A-Za-z0-9_.\-]+\.svg)""")
+# Any other path to a pictogram ("../../assets/...", "/abs/assets/..."): sync does not copy
+# it, so it must resolve from the deck as written.
+OTHER_REF = re.compile(r"""[\w./:\-]*[./]assets/pictograms/svg/[A-Za-z0-9_.\-]+\.svg""")
 
 
 def load_catalog() -> list[dict]:
@@ -93,6 +96,12 @@ def referenced(deck: Path) -> list[str]:
     return sorted(set(REF.findall(deck.read_text(encoding="utf-8-sig"))))
 
 
+def unresolved(deck: Path) -> list[str]:
+    """Pictogram paths with a prefix (e.g. ../../assets/...) that do not exist from the deck."""
+    text = deck.read_text(encoding="utf-8-sig")
+    return sorted({ref for ref in OTHER_REF.findall(text) if not (deck.parent / ref).is_file()})
+
+
 def sync(deck: Path) -> list[str]:
     """Copy referenced SVGs into <deck dir>/assets/pictograms/svg/. Return unknown names."""
     dest = deck.parent / "assets" / "pictograms" / "svg"
@@ -144,7 +153,14 @@ def main() -> int:
     for fname in unknown:
         close = ", ".join(suggest(fname)) or "none"
         print(f"error: unknown pictogram '{fname}' (closest: {close})", file=sys.stderr)
-    return 1 if unknown else 0
+    broken = unresolved(args.deck)
+    for ref in broken:
+        print(f"error: '{ref}' does not exist from {args.deck.parent}; write it as "
+              f"assets/pictograms/svg/{ref.rsplit('/', 1)[-1]} and sync copies it next to the deck",
+              file=sys.stderr)
+    copied = sorted(set(referenced(args.deck)) - set(unknown))
+    print(f"{len(copied)} pictogram(s) in {args.deck.parent / 'assets' / 'pictograms' / 'svg'}")
+    return 1 if unknown or broken else 0
 
 
 if __name__ == "__main__":

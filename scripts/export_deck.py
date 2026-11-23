@@ -96,7 +96,8 @@ def main() -> int:
                    help="PPTX text re-wraps in PowerPoint (easier to edit) instead of keeping "
                         "the line breaks of the PDF")
     only = p.add_mutually_exclusive_group()
-    only.add_argument("--pdf-only", action="store_true")
+    only.add_argument("--pdf-only", "--no-pptx", action="store_true",
+                      help="skip the PPTX (--no-pptx is the same flag as in tools/check_examples.py)")
     only.add_argument("--pptx-only", action="store_true")
     args = p.parse_args()
 
@@ -113,7 +114,12 @@ def main() -> int:
         close = ", ".join(pictograms.suggest(name)) or "none"
         print(f"error: unknown pictogram '{name}' (closest: {close}). "
               "Find names with: python scripts/pictograms.py search <word>", file=sys.stderr)
-    if unknown:
+    broken = pictograms.unresolved(md)
+    for ref in broken:
+        print(f"error: pictogram path '{ref}' does not exist from the deck folder. Write it as "
+              f"assets/pictograms/svg/{ref.rsplit('/', 1)[-1]}: the export copies it next to the deck.",
+              file=sys.stderr)
+    if unknown or broken:
         return 1
 
     issues = lint_deck.lint(md)

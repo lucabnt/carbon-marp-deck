@@ -1104,8 +1104,9 @@ style: |
   table { display: table; width: 100%; font-size: 16px; line-height: 1.38;
           border-collapse: collapse; border-spacing: 0; margin: 16px 0; }
   table tr { background: transparent; border: 0; }
+  table { --cell-py: 12px; --cell-px: 16px; }
   table th, table td { border: 0; border-bottom: 1px solid var(--cds-border-subtle-01);
-                       box-sizing: border-box; height: 48px; padding: 12px 16px;
+                       box-sizing: border-box; height: 48px; padding: var(--cell-py) var(--cell-px);
                        text-align: left; vertical-align: top; }
   table th { background: var(--cds-layer-accent-01); color: var(--cds-text-primary); font-weight: 600; }
   table td { background: var(--cds-layer-01); color: var(--cds-text-secondary); }
@@ -1113,9 +1114,11 @@ style: |
   /* Heatmap cells: <span class="heat s1">…</span> … s9 fills the whole cell    */
   /* with the Carbon Blue sequential scale, Blue 10 (s1) to Blue 90 (s9);      */
   /* text turns text-on-color from s6. Bucket the values into the steps.        */
-  table td .heat { display: block; margin: -12px -16px; padding: 12px 16px;
+  /* The cell fills the whole td: its margins follow the cell padding variables, */
+  /* so change the padding through --cell-py / --cell-px, not on td directly.   */
+  table td .heat { display: block; margin: calc(-1 * var(--cell-py)) calc(-1 * var(--cell-px));
+                   padding: var(--cell-py) var(--cell-px);
                    color: var(--cds-text-primary); }
-  section.compact table td .heat { margin: -8px -16px; padding: 8px 16px; }
   table td .heat.s1 { background: #edf5ff; }
   table td .heat.s2 { background: #d0e2ff; }
   table td .heat.s3 { background: #a6c8ff; }
@@ -1154,7 +1157,8 @@ style: |
   /* and tables from row size lg (48px) to md (40px). Both are Carbon sizes.    */
   section.compact h3, section.compact .card h3 { font-size: 20px; line-height: 1.4; }
   section.compact .card.sm h3 { font-size: 16px; line-height: 1.5; }
-  section.compact table th, section.compact table td { height: 40px; padding: 8px 16px; }
+  section.compact table { --cell-py: 8px; }
+  section.compact table th, section.compact table td { height: 40px; }
 ---
 
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->

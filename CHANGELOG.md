@@ -6,6 +6,24 @@ All notable changes to this project. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- `pictograms.py sync` and `export_deck.py` report pictogram paths with a prefix
+  (`../../assets/pictograms/svg/…`) that do not exist from the deck folder, instead of
+  copying nothing without a message.
+- Heatmap cells (`.heat`) follow the table cell padding through `--cell-py` / `--cell-px`
+  instead of fixed negative margins, so a theme with another cell padding keeps them inside
+  the cell.
+
+### Changed
+
+- `export_deck.py` accepts `--no-pptx` as an alias of `--pdf-only`, like
+  `tools/check_examples.py`.
+- `tools/build_skill_zip.py` takes the skill name from the `name:` in `SKILL.md`, so a fork
+  renames the zip by renaming the skill.
+- Documented that chart SVG layers use hex colours (an SVG image cannot read the theme
+  tokens) and that rendering with Marp CLI directly needs `--config-file`.
+
 ## [1.2.0] — 2026-11-22
 
 ### Added

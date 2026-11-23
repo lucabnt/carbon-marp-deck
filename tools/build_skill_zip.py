@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -24,7 +25,17 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-NAME = "carbon-marp-deck"
+
+
+def skill_name() -> str:
+    """The `name:` in the SKILL.md front matter, so a fork only renames it there."""
+    m = re.search(r"^name:\s*[\"']?([\w.-]+)", (ROOT / "SKILL.md").read_text(encoding="utf-8"), re.M)
+    if not m:
+        sys.exit("error: no `name:` in the SKILL.md front matter")
+    return m.group(1)
+
+
+NAME = skill_name()
 MAX_FILES = 200
 SVG_PREFIX = "assets/pictograms/svg/"
 SKIP_PREFIXES = (".github/", ".gitattributes", ".gitignore")

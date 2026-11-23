@@ -265,7 +265,7 @@ python scripts/export_deck.py my-deck/my-deck.md --strict --preview
 | `--preview` | `my-deck/my-deck-preview/*.png`, one per slide |
 
 PDF, previews and PPTX are produced in parallel (a few seconds for a typical deck).
-Options: `--pdf-only`, `--pptx-only`, `--outdir DIR`, `--pdf-notes` (speaker notes as PDF
+Options: `--pdf-only` (alias `--no-pptx`), `--pptx-only`, `--outdir DIR`, `--pdf-notes` (speaker notes as PDF
 annotations), `--reflow` (PPTX text re-wraps in PowerPoint, see below).
 With `--strict` every warning fails the export.
 
@@ -293,6 +293,8 @@ npx --yes @marp-team/marp-cli@4.5.1 --no-stdin my-deck.md --pdf --config-file th
 ```
 
 (run from the repository, or give the full path of `themes/marp.config.json`).
+Do not leave out `--config-file`: without the allowlist Marp drops the `style` attributes
+without a warning, and bars, meters, roadmaps and custom charts render empty.
 
 ## Examples
 
