@@ -6,6 +6,8 @@ All notable changes to this project. The format follows
 
 ## [Unreleased]
 
+## [1.2.1] — 2026-11-23
+
 ### Fixed
 
 - `pictograms.py sync` and `export_deck.py` report pictogram paths with a prefix
@@ -104,7 +106,8 @@ First public release.
   PDF with PowerPoint), `build_pictograms.py`.
 - Example decks with their PDF and PPTX renders, `SECURITY.md`, `CONTRIBUTING.md`, CI workflow.
 
-[Unreleased]: https://github.com/lucabnt/carbon-marp-deck/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/lucabnt/carbon-marp-deck/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/lucabnt/carbon-marp-deck/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/lucabnt/carbon-marp-deck/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/lucabnt/carbon-marp-deck/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/lucabnt/carbon-marp-deck/releases/tag/v1.0.0
